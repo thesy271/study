@@ -1,0 +1,1385 @@
+npm create-react-app {app name} 명령어로 리액트 프로젝트 생성
+
+node_modules : 라이브러리 코드 보관함
+public : static 파일 모아놓는 곳
+src : 코드 짜는 곳
+packeage.json : 프로젝트 정보
+
+*레이아웃 만들떄 쓰는 jsx 문법 3개
+1) class 넣을떄 className
+2) 변수넣을 때 {증괄호}
+
+* state만드는법 : useState() 자료 잠깐 저장할때 변수말고도 state 써도됨
+-왜 state써야함? == 자주변경될거 같은 html 부분은 state로 만들어놓기
+변수랑 달리 state는 갑자기 변경되면 html이 자동 재렌더링되서 반영됨
+
+
+1.import {useState}/ useState enter함
+2.useState(보관할자료)
+3.let[작명, 작명]
+
+Destructuring 문법
+let [a,c]  = [1,2] 배열임; let num = [1,2]일 때, let a= num[0];
+
+/* eslint-disable */  = warning 안보이게 하기
+
+onClick = {함수이름 or function(){ 함수내용}} 
+
+*state 변경하는 법(등호로 변경 x)
+-state변경함수(새로운 state값);
+
+*(참고) arrat/ object 다룰 때 원본은 보존하는게 좋음
+arr 가 배열일때, copy 시에 우변에 [...arr변수이름] 이런식으로 놓기
+
+**state 변경 함수 특징
+기존 state ==신규 state : 변경 x (자원절약)
+
+**[array/object 특징]
+같은 화살표 가지고 있는 변수끼리는 등호로 비교해도 똑같다 나옴 (js특징)
+즉 배열의 내용물이아닌,  배열2 == 배열1 을 해도
+배열1의 내용물이 바뀌면 베열2의 내용물이 바뀐다
+반대로 배열 1과 배열2가 따로 선언할당된 배열이면 내용물이 같아도 === 등호로 false가 나옴
+-> 그래서 clone array(or object) 할때 / let a = [...글제목]; 이런식으로 하는 것
+
+
+*html 축약하는 함수  -> function 작명(){} -> return 안에 (html)담고 <작명></작명> 이럴수있음
+모든 함수 외부에서 만듬
+화살표로 만들어도 상관 없음
+
+의미없는 <div></div> -> <></> 로 변경 
+
+*컴포넌트로 만들면 좋은것
+1.  반복적인 html 축약
+2. 큰페이지들
+3. 자주변경되는것들
+-단점:
+state가져쓸때 A함수에서 쓰는 state가져다 쓸떄 맘대로 못가져옴
+
+삼항연산자 (조건식) ? '맞을때' : '틀릴때'
+ null은 보통 비어있는 html으로 사용됨 / 컴포넌트화 한 html/>
+
+**동적인 UI 만드는 step
+1. html css로 디자인 완성
+2. UI의 현재 상태를 state로 저장
+3. state따라 UI바뀌는 것 작성
+
+* html 반복문으로 중복되는거 처리
+map 
+1 array 자료 갯수만큼 함수 코드 실행해줌
+
+
+js복습(map)
+-map(function(a,i)) : 반복문이라서 i 이 1씩증가
+ex // 각 요소를 제곱하여 새로운 배열 생성
+    const squaredNumbers = numbers.map(number => number * number); <- 이런식으로 return이나 중괄호 안쓰고, 화살표함수으로 간결하게 쓸수도 있음
+js복습(filter)
+-return 에 오는 조건식이 true/false 반환하는 값임 
+isEven :짝수만
+-return으로 해당되는 값이 없으면 null이 아닌 빈배열([])을 반환
+
+* 반복문쓸때 콘솔창에 나타나는 빨간 에러 -> key="i" 쓰면 안보임
+react-jsx-dev-runtime.development.js:87 Warning: Each child in a list should have a unique "key" prop.
+
+**props
+-부모컴포넌트에서 자식 컴포넌트로 state전송 -> props 이용 // <Modal 작명="{state이름}"/> :null
+-무조건 부모->자식으로만 가능
+*(중요)state만드는 곳은 state 사용하는 컴포넌트들 중 최상위 컴포넌트에 놓음 / 부모 -> 자식으로만 전송가능하기 때문에 
+
+*state만들때 3단계
+1. html css로 미리 디자인해놓고 
+
+2. 현재 UI의 상태를 state로 만들어두고
+
+3. state 종류에 따라서 UI가 어떻게 보일지 작성하랬습니다.
+
+input입력시 코드 실행 -> onChange, onInput
+이벤트 핸들러 : onMouseOver, onScroll 등
+/입력값 가져올때 e.tartget.value 
+
+이벤트버블링: 상위html로 퍼져서 이벤트가 중복으로 발생/즉 상위를 포함하는 하위를 클릭해도 상위의 이벤트 효과가 결과적으로 나타남
+ㄴ> 이벤트 버블링 막으려면 하위에서 e.stopPropagation() 
+
+state변경함수는 늦게 처리됨(=전문용어: 비동기처리)
+
+* 배포 전 컴파일 또는 build하기
+ why? 작성한 state, JSX, <컴포넌트>, props 이런 문법들은 브라우저가 해석할 수 없으니 그대로 배포할 수 없음
+CSS, JS, HTML 문법으로 바꿔주는 작업이 필요
+= npm run build 터미널에 입력하면 build 폴더 생성 
+ 
+------------------------------------------------------------------------------------------------------------------------------------------------ 
+필기 2탄 ( shop 강의부터 ) 
+------------------------------------------------------------------------------------------------------------------------------------------------ 
+
+react-bootstrap.github.io 접속하고 
+티미널에 npm install react-bootstrap bootstrap 입력 
+-개발서버랑 터미널 종료하는법 : 컨트롤+c Or 터미널 탭 닫기
+
+* background-size
+auto	원래 배경 이미지 크기만큼 표시(기본 값)
+contain	지정한 요소 안에 배경 이미지가 다 들어오도록 이미지를 확대/축소
+cover	지정한 요소를 다 덮도록 배경이미지를 확대/축소
+
+-background-position: center; //늘렸다 줄여도 그림이 기준점이 가운데
+
+*img html에 적용할때
+1) import로 경로불러와서 변수로 설정
+2) 직접 문자열 경로로 불러옴
+3) (이미지가 많을 때)
+=> 리액트는 사이트 발행 전에 html js css 번들링함(3개 파일을 압축)
+단, public은 압축이 안됨/ html 에서 public폴더 이미지 사용할떄는 ' /이미지경로 '
+그래서 형태를 보존하고 싶은 파일은 public 폴더에 넣으면 되는데 js 파일은 그럴 일은 거의 없고 
+이미지, txt, json 등 수정이 필요없는 static 파일들의 경우엔 public 폴더에 보관해도 상관 x //즉 import처리 할게 많은 img 들은 public 에 놓고 바로 src="/~" 때림
+-권장되는 방식
+: src={process.env.PUBLIC_URL.enc + '/~' }
+
+*코드 길어지면 import export 문법
+-js파일만들어서 변수 선언함 / 함수도 가능
+{변수선언
+export default 변수명 ;}  +  사용되는 App.js파일에다가 import 작명 from 'js파일경로'; 이렇게 해줌 
+//변수가 여러개이면 export {} ; 로 마무리하고 작명은 무조건 export 에 쓴 그대로 중괄호로 가져와야함
+js파일은 import할때 확장자 생략해도됨
+
+src={}여기서 중괄호는 자바스크립트 입력란으로 바꿔줌
+{}안에 변수는 중괄호로 안감싸고 표시함 / 자바스크립트는 숫자 + 문자일때 붙어나와서 연산결과가 예상과달라질수있으니 필요하면 괄호로 묶기
+백틱을 쓸떄도 바깥이 중괄호로 감싸주긴하는데 변수부분은 $이런식으로 중괄호 감싸기 
+
+*리액트 라우터
+순수 js html과 다르게 리액트는 어떤 경로접속에서 페이지는 하나인데(Single Application Page ex: index.html) 컴포넌트를 경로별로 다르게 바꿔서 보여줌
+-react-router-dom 라이브러리로 저런형태를 쉽게 만들음
+#설치법
+터미널: npm install react-router-dom@버전 입력,
+index.js 에서 <App/> 부분을 <BrowserRouter>로 감쌈(상단에 import { BrowserRouter} form "react-router-dom" 처리)
+// import 에서 from  뒤에 경로 './'없고 ""로 되어있으면 대부분 설치한 라이브러리임
+app.js 에서 import { Router, Router, Link} from 'react-router-dom';
+Routes>Route 에다가 path='페이지경로' 설정 + element={ 페이시제 표시할 내용}
+Route path="*" <- 링크 설정된 이외의 모든 페이지
+
+*useNavigate
+-페이지 이동 도와줌 / Link to랑 같은 역할인데 이건 a태그 처럼 보여 꼴보기 싫을때 씀
+navigate(1) : 앞으로가기 / -1은 뒤로가기  
+
+*Outlet
+Route태그안 Route는 path 하위만 적음 //상위경로까지 알아서 포함됨  
+ㄴ> 단 상위의 element내용도 같이 보이고 하위 element 보이려면 어디에 그것이 작성할지 지정해야함함
+상위 element 컴포넌트 안에 <Outlet></Outlet>태그작성하면 하위태그 Route의 element가 여기 표시됨  
+//컴포넌트화 한경우 그것을 {}안에 언급할때 Comp() 나 <Comp /> 두개로 쓸수 있긴한데 props 쓸때,조건부 렌더잉 반복문 안서는 함수형으로 쓰고 가독성이나 jsx형으로 쓸때는 <Comp />이런 형테로 씀 
+
+*url 파라미터
+ex) path="/detail/:id" -> :id 이부분
+*useParams() 유저가 url 파라미터 입력한 것 가져옴
+==> /:id 를 let {id} = useParams(); 해서 가져옴 
+
+*find 함수 : 콜백함수에서 조건을 만족하는 첫번째 요소를 찾고 그 요소타입 자체를 반환
+** arrow function에서 return과 중괄호는 동시에 생략가능 
+
+*type of {변수명} : type값 반환
+
+* === 가 아닌 == 연산에서는 js는 undefined와 null을 동등하다고 간주
+
+* styled-components 
+터미널: npm install styled-components -> import styled from 'styled-components' ;
+let 변수명 = styled.(div, button등으로 설정)` css 키 : 값 ; ... `
+-장점: 1 css 안열어도됨 2 다른 js로 스타일이 오염 x (해당 페이지 안에서만 css에 대한 style이 쓰여서 나중에 하나로 리액트가 합칠때 오염x)
+       3 페이지 로딩시간 단축 (<style></style>로 넣어줌 ->css 파일 필요없기떄문에 딘축)
+props로 컴포넌트 재활용가능
+또한 기존 스타일 복사 가능 ex) style.Button(YellowBtn);
+-단점: 1 js파일이 복잡해짐
+       2중복되는 css많으면 그냥 import쓰는거랑 차이 x 
+       3 css디자이너랑 협업시 불편
+
+* {App이름}.module.css 라고 지으면 해당 App.js에 대해서만 쓰임 
+
+* console 두번 씩 뜨는 이유 : 디버깅위해서 동작 / 해결 inndex.js > <React.StrictMode></React.StrictMode> 제거
+** react 에서 jsx를 반환할때 반드시 부모요소로 감싸져 있어야함 //대표적으로 <div>로 감싸는 방법이 있음
+
+
+* 컴포넌트의 Lifecycle
+mount, update, unmount
+페이지에 장착, 업데이트 , 제거
+-각 주기에 간섭해서 실행할 코드를 놓을 수 있음
+1)옛날방식
+class Detail2 extends React.Component {
+    componnentDidMount(){
+
+    }
+
+    componnentDidUpdate(){
+
+    }
+    
+    componnentWillUnmount(){
+
+    }
+
+}
+
+*2) 요즘 : useEffect = component가 mount, update 될 때마다 실행됨
+import { useEffect } from 'react'; 
+useEffect 안에 있는 코드는 html 렌더링 후에 동작 //{} 밖에 적어도 실행은 되긴 함 
+// ex  setTimeout(()=>{   setAlert(false)},2000,[count]) <- [count]의 state가 변할때만 실행됨 /[]빈배열일때는 update말고 mount시 실행됨
+useEffect 동작 전에 실행되는 return ()=>{ 코드 ~}
+타이머 제거 코드 clearTimeout(변수설정한 setTimeout 함수); //재 렌더링 해서 서버에 데이터 받아올떄 중첩되는 기존 데이터 요청 제거할 수 있음
+ㄴ> clean up function 은 mount시 실행 x, unmount시 실행됨
+
+****useEffect 정리
+1) 재렌더링마다 코드 실행 
+useEffect(()=>{})
+2) 마운트 시 1회 코드실행하고 싶으면
+useEffect(()=>{},[]) 
+3) unmount시 1회 코드 실행
+useEffect(()=>{ return ()=>{}},[])
+4) useEffect 실행 전에 뭔가 실행하려고 하면
+useEffect(()=>{ return ()=>{} })
+5) 특정 state 변경시에만 실행 + 첫마운트 시 
+useEffect(()=>{},[state명])
+
+*마운트 vs 재렌더링
+1)마운트: 컴포넌트가 '처음'으로 DOM에 삽입될때
+2)재렌더링: 컴포넌트 상태 나 props가 변경되어 다시 렌더링 될때
+
+*useEffect 안에 적는 코드
+1 어려운연산
+2 서버에서 데이터 가져오는 작업
+3 타이머 장착
+
+*react에서 DOM 조작을 할때 useState사용하여 동작적으로 조작하고 직접document 객체를 사용하는것은 x
+React의 상태 관리: React에서는 상태(state)를 사용하여 UI를 관리하고, 상태가 변경될 때마다 리렌더링을 트리거합니다. 
+document 객체를 직접 조작하면 React가 이러한 상태 변화를 감지하지 못하고, 예상치 못한 상태와 UI의 불일치가 발생할 수 있습니다.
+=> 즉 상태 관리를 통해 리렌더링을 발생키기고 동적으로 동작하기 때문에 직접 조작하면 안먹히고 성능과 일관성유지에서 문제가됨
+
+*isNaN() : 숫자인 문자열인지파악
+
+*ajax 쓰려면 옵션 3개 중 택1
+1.XMLHttpRequest 
+2.fetch()
+
+***복습
+-get요청시
+$.get('https://codingapple1.github.io/hello.txt')
+ .done(function(data){
+    console.log(data);
+
+ }); <- 성공시 나오는 콜백 함수   
+ 
+ -post요청시
+ $.post('https://codingapple1.github.io/hello.txt', {name: 'kim'})
+ .done(function(data){
+    console.log(data);
+ }).fail(function(){
+    console.log('실패함');
+ });  <-실패시 fall과 콜백함수 붙임
+
+*fetch(브라우저 기본 ajax함수)
+서버와 유저는 문자된 데이터만 주고받을수 있음-> object나 array 보내려면 JSON으로 보내야함
+따라서 위에처럼 done fail 보다, then 1개 더 있음 <-받아온 data를 json으로 변환하고서  object로 다시 변환(두번째 .then)
+
+fetch('https://codingapple1.github.io/hello.txt').then(res=> res.json()).then(data => { 
+        console.log(data);
+}).catch(error=>{ console.log(error)});
+
+-> method값이 안주어지면 기본적으로 get으로 전송
+fetch('url',{
+   method: 'POST',
+   body: }
+})
+.then(()=>{}).then(()=>{})
+
+3.axios : npm install axios // import axios from 'axios' //
+-get
+// axios.get('url주소') <-요청 
+// axios.get('url주소').then((data)=>{}) <-요청.결과 
+// axios.get('url주소').then((data)=>{}).catch() <-요청.결과.요청실패시  
+//axios 는 실은 json으로 data를 받아오는데 aixos가 array나 , 객체로 알아서 자동으로 바꿔줌 
+//but fetch는 직접 json-> array/object 변환과정 필요
+// .data로 값 가져옴
+
+
+let copy = [...기본꺼,...새로운배열] ; 하면 배열이 합쳐짐
+
+-post , 서버로 데이터 전송
+axios.post('url', {name: 'kim'})
+
+-동시에 ajax 요청 여러개 = promise
+Promise.all([axios.get('url'), axios.get('url')]).then(()=>{ 두개 다 요청 성공시 });
+ㄴ>각각에 대한 response는 index를 써서 지칭 
+Promise.all([axios.get('URL1'), axios.get('URL2')])
+  .then(responses => {
+    const responseData1 = responses[0].data; // 첫 번째 요청의 응답 데이터
+    const responseData2 = responses[1].data; // 두 번째 요청의 응답 데이터
+
+  })
+* props 전달할때 props.tap에서 props. 안쓰려면 매개변수 function(props)를 function({탭}) 이렇게 하면 됨
+
+컴포넌트에서 
+if문 조건 안쓰고 배열안에 html태그 + index  넣을 수도 있음
+
+컴포넌트 반환 return 꼭 설정하기  
+
+
+**전환 애니매이션 만드는 단계
+1) 애니 동작 전 className만듬
+2) 애니 동작 후 className만듬
+3) className에 transition 속성 추가 
+4) 원할 때 2번 className 부착
+
+opacity: 투명도 // 0일수록 투명하고 1일수록 불투명
+transition: {해당속성} {속도} 
+=> 해당 속성이 변할때 {속도}정도 빠르기로 변경해주세요
+
+`문자열 ${변수}` 쓸때 or 문자열 + 변수 쓸때  전체에 {} 넣어주기 : ex) className= { `문자열 ${변수}`} or { 문자열 + 변수}
+return()문안에 div 구조 안에 div일때 [] 이런거 있으면 []까지 그대로 찍히므로 {}로 사이 분리해주기
+
+*리액트의 automatic batching 기능(18버전부터)
+state변경함수가 근처에 있으면(명령문이 근처에 붙어있으면) 딱하나만 state변경해줌
+useEffect안에 2빠; return()=>{1빠}써도 // 그래서 setTimeout으로 시간차를 두면 의도대로 동작함
+
+-useEffect안에 useState 정의할 수 없음 
+ 
+-컴포넌트의 return 값은 <div>나 <React.Fragment>로 감싸져야함
+
+
+*Context API : props 싫을 때 / props는 바로 아래 자식한테로만 전달가능해서
+전달하는 자손의 단계가 2개이상일경우 전달-전달... 해야함
+이게 싫다면
+1. Context API(리액트 기본문법) : 실전에서는 많이 안씀 
+-만드는법
+ 1)export let Context1 = createContext() 선언후
+ 2)사용하는 자식 컴포넌트를 Context.Provider 태그로 감쌈 && value={{state1, state2}} 값줌 재고, shoes
+ 3)state 사용은 Context를 2)에 자식 컴포넌트파일에 import  / import {Context1} from '부모컴포넌트파일'
+ 4)let {state1} =  useContext(Context1); 이런식으로 import후 변수명 할당 
+ -props가 중첩될때 쓰고, 걍 불편하면 props씀
+ -특징
+ 1.state변경시 쓸데없는 것까지 재렌더링 1)성능이슈, 2)컴포넌트 재활용이 어려움 -> redux같은 외부 라이브러리 씀
+
+
+<tr><th>차이
+th: bold와 가운데정렬
+그외에 같음
+
+*****redux : 컴포넌트들이 props 없이 state공유가능 = 컴포넌트간 state 공유 편해짐 
+-설치
+1)package.json 확인 -> react, react-dom 버전이 18이상이여야 잘됨
+2) 터미널 : npm install @reduxjs/toolkit react-redux
+3) 셋팅 1. store.js 파일생성 <- state 상태 저장 & configureStore 세팅
+4) index.js에서 store.js를 import & import { Provider } from 'react-redux' & Provider stote ={store} 하면됨
+
+-redux에 store에 state 보관하는법
+store.js에 import {cteateSlice}  from  @reduxjs/toolkit // state하나를 slice라고함
+   변수명 = createSlice <- useState랑 비슷한 역할
+   export default configureStore({
+      reducer:{
+         작명: 변수명.reducer
+      }
+   })
+
+Cart.js에 import { useSelector } from 'react-redux' 
+후에 let a = useSelector((state)=>{ state }); //=>{ return state.user }); 면 user 스테이트만 사용가능
+
+반복문( ex: map) 쓰면 key 속성 추가 하면 좋음
+반복문 return 다음줄 (~ 이러면 컴파일 못하는듯; 걍바로 return( ~~ )이러는 게 날 듯
+
+createSlice()에서 
+name, initailState : 초기형태 , reducers: state 수정 함수 
+
+-state 변경 함수 store.js에서 가져올 때 
+import  useDispatch from 'react-redux' 한다음에 변수저장 let dispath = userDispatch(); //store.js에 요청 보내주는 함수임
+
+onClick = { 실행문 } 에서 실행문이 클릭안해도 무한 루프 or 자동 실행 되는 문제
+ㄴ> onClick = { 화살표함수 } 형태로 작성 : 이벤트 즉, 이벤트 발생시 실행  
+ㄴ> onClick = { 함수 } 함수를 {}안에 바로 작성 : 클릭안해도 발생, or 무한루프 발생  
+
+[error] App.js:43 Warning: Each child in a list should have a unique "key" prop. : 
+map으로 반복되는 자식요소가 key속성값으로 고유값존재해야 콘솔지워짐
+
+실제 수정은 store.js 에서 이루어지고 useDispatch로는 실행해달라고 요청만 / 이점: 어떤루트로 state변경되었는지 쉽게 알 수 있음
+
+-state가 object/array면 return 없이 직접 수정해도됨
+
+ex) payload 붙이는 법 
+_store.js   changeAge(state, action){ state.age += action.payload } <- 이런식으로 하면 괄호안에 매개변수 받아서 처리
+_Cart.js useDispatch(changeAge(매개변수))
+
+
+*findIndex 함수 
+array.findINdex((a)=>{return }) // array에서 index번호를 반환하는 함수
+
+* == vs ===
+==는 형변환해서 맞춰서 비교해주는 기능있음 / ===는 같으려면 데이터 타입 같아야함
+
+
+***리액트에서 자주 쓰는 if문 작성패턴 5개
+1) 컴포넌트안에서 return()안에 jsx에서는 사용불가 //JSX(JavaScriptXML): JS의 확장문법, JS안에서 <XML>형식으로 작성할수 있게함
+   -> 그래서 보통 return + JSX 전체를 벹는 식으로 사용
+2) JSX안에서 쓰는 삼항연산자 //조건문 ? 조건문 참일때 실행할 코드 : 거짓일 때 실행할 코드
+   -> 중첩사용 예시
+   {
+      1 === 1
+      ? <p>참이면 보여줄 HTML</p>
+      : ( 2 === 2 
+          ? <p>안녕</p> 
+          : <p>반갑</p> 
+        )
+    }
+3) && 연산자로 if 역할 대신하기 = 왼쪽 오른쪽 둘다 true면 전체를 true로
+   -> 예
+      true && '안녕'; //안녕
+      false && '안녕'; //false
+      true && false && '안녕'; //false
+   즉, JS는 등장하는 false 값을 찾아주고 없으면, 마지막값을 남김
+   -> 예2: 
+      function Component() {
+         return (
+         <div>
+            { 1 === 1 && <p>참이면 보여줄 HTML</p> }
+         </div>
+         )
+      }
+      이 때, 왼쪽 조건식이 true면 오른쪽 JSX가 남음
+      왼쪽 조건식이 false면 false 
+      (false가 남으면 HTML로 렌더링하지 x)
+
+4)  switch / case 조건문 :  변수하나만 검사할 수 있다는게 단점 / case, .. default
+5)  object/Array 응용형
+   -> 예
+   function Component() {
+      var 현재상태 = 'info';
+      return (
+        <div>
+          {
+            { 
+               info : <p>상품정보</p>,
+               shipping : <p>배송관련</p>,
+               refund : <p>환불약관</p>
+            }[현재상태]
+          }
+    
+        </div>
+      )
+    } 
+
+*localStorage : 데이터 서버없이 반영구적 저장
+- 키, 값으로 저장, 문자열만저장, 5mb까지, 브라우저 청소하면 삭제 
+- 사용법
+1) localStorage.setItem('key','value')
+2) localStorage.getItem('key')
+3) localStorage.removeItem('key')
++) object, array 을 JSON 형태로 바꾸면 저장가능
+    -> JSON.stringify(obj);
+   꺼낼때는 JSON.parse(꺼낸거);
+ 
+- sessionStorage : 사이트 끄면 날아감
+
+
+***** react-query //  "실시간 데이터가 중요하다면?" : 실세간 데이터를 계속 가져와야하는 사이트들이 쓰면 굿  
+                  //ajax 성공시/ 실패시 hrml 보여준다면, 몇초마다 ajax요청, 실패시 몇초 후 요청재시도, prefetch 이것들 쉽게 구현가능
+1)설치 npm install react-query@3
+2)index.js : <QueryClientProvider client={a}>로 app Comp 감쌈 import {QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+             const a = new QueryClient();
+3)사용 : useQuery('작명',()=>{
+      ajax..~
+   },{ steleTime: //요청하는 간격}
+   
+   )
+  axios, fetch는 http 요청을 보내는데 사용되는 도구및라이브러리임
+  arrow함수에서 중괄호와 return은 동시에 생략해야됨
+
+4)장점: 
+1 성공/실패/로딩중 쉽게 파악가능
+2 틈만나면 자동으로 재요청해줌
+3 실패시 알아서 retry 해줌
+4 state공유안해도됨
+5 ajax 결과 캐싱가능 // 캐싱: 5분동안 ajax 결과를 기록해줌
+  #react-query는 최신 문법으로 다시 배워야함// 인강의 문법이랑 다름
+
+***** 개발 성능 향상
+1)
+-크롬: react developer tool 앱이용
+-SPA : 빌드해서 발행하는 js 파일 하나에 모든 코드 다 쑤셔넣음 //유저가 메인페이지 접속하면 1html, 2css. 3 큰 js파일 다운받음
+-메인페이지에다 lazy 함수 이용 : 필요해질때 import, lazy는 react에서 불러옴
+-Suspense로 감싸면 로딩중 ui 넣기가능 // fallback ={<div>로딩중임</div>} //Route 전체 감싸도 상관x
+ex) const Detail = lazy(()=> import('./route/Detail.js'))
+
+2) memo / 자식컴포넌트의 재렌더링을 막고 싶을때 
+   (1) import {memo} form 'react'
+   (2)   1. memo를 import 해와서
+         2. 원하는 컴포넌트 정의부분을 감싸면 됩니다. 
+            memo(function(){}) 
+   => child에 전송되는 props가 변할 때만 재 렌더링 됨      
+   
+3) useMemo / useEffect랑 비슷, 첫 렌더링 1회만 
+  import 해와서 useMemop(()=>{return 함수()},[state ])
+
+ ㄴ> useEffect와 차이점 : 실행 시점, useEffect가 html실행이 다끝나면 발생되는것과 달리, 렌더링 될때 return문에서 같이 실행됨
+
+4) batch : state 변경여러개뭉쳐있으면 마지막 한번만 재렌더링 1회
+      /*렌더링
+      리액트에서의 렌더링은 사용자 인터페이스(UI)를 생성하고 업데이트하는 과정을 가리킵니다.
+      리액트는 가상 돔(Virtual DOM)을 사용하여 효율적으로 UI를 렌더링하고 갱신합니다.
+      가상 돔(Virtual DOM) 구성: 리액트 컴포넌트를 사용하여 가상 돔을 구성합니다. 
+      이 가상 돔은 실제 돔과 유사한 구조를 가지고 있지만, 메모리에만 존재하며 실제 화면에는 나타나지 않습니다.
+      가상 돔 갱신: 상태(state)가 변경되거나 프로퍼티(props)가 변경될 때, 리액트는 가상 돔을 업데이트합니다. 
+      실제 돔 업데이트: 가상 돔의 변경 내용을 기반으로 실제 돔을 업데이트합니다. 
+      이때 리액트는 최소한의 돔 조작을 수행하여 성능을 최적화합니다.
+      화면에 반영: 실제 돔의 변경이 완료되면 화면에 변경된 내용이 반영 
+      */
+
+5) useTransition 느린컴포넌트 성능향상가능/리액트 18버전 부터 //근본적인 성능개선은 아님
+import useTransition from 'react' / let [isPending, startTransition] = useTransition()
+행위의 시작이되는 state변경 함수를 startTransition()=>{} 안에 넣어줌
+startTransition : 늦게처리 라고보면됨
++ 
+isPending은 startTransition()으로 감싼 코드가 처리중일때 true로 변하는 함수임/ 처리끝나면 false로 바뀜
+
+5-1) useDeferredValue() : useTransition이랑 비슷 
+let state1 = useDeferredValue(name) <- name 은 state 변수 
+
+*PWA : 모바일앱인척하기
+장점: 
+1 설치 마케팅 비용 적음
+2 노인들배려
+3 html css js만으로 앱까지
+4 푸쉬알림, 센서등
+-생성
+npx create-react-app 프로젝트명 --template cra-template-pwa
+?기존 프로젝트를 PWA로 만들려면? 그냥 새 PWA 프로젝트 만들고 src에 기존코드 복붙 + 필로한 라이브러리도 설치
+
+*sync(동기적)
+자바스크립트는 일반저긍로 동기식으로 처리됨 /즉, 적은 순서대로 차례로 코드가 실행
+*async(비동기적)
+ajax, 이벤트 리스너, setTimeout 
+ex) ajax의 경우 요청하는 순차적으로 실행되지 않고 완료되면 실행됨
+   setState 오래걸리면, 다른 코드들부터 실행됨
+
+*****리액트 연동하기
+ㄱ) 웹서버만들기
+1 server폴더 만듬, 
+
+그안에 server.js 만듬
+   const express = require('express');
+   const path = require('path');
+   const app = express();
+
+   app.listen(8080, function () {
+   console.log('listening on 8080')
+   }); 
+
+2 터미널 열어서 npm innit -y
+3 npm install express
+
+ㄴ) 빌드한 리액트 프로젝트를 server폴더에 복붙 후 
+server.js에 
+{어떤 놈이 메인페이지로 접속하면 저거 리액트로 build한 index.html 보내주셈} 이라는 코드 입력
+
+   (server.js에 추가)
+   app.use(express.static(path.join(__dirname, 'react-project/build')));
+
+   app.get('/', function (요청, 응답) {
+   응답.sendFile(path.join(__dirname, '/react-project/build/index.html'));
+   });
+url에 localhost:8080 입력하면 리액트 프로젝트 나옴 
+......................................................
+근데 리액트 라우터로 /list 페이지를 개발해놨는데 실제 localhost:8080/list 로 직접 URL 입력해서 접속하면 안뜸
+   왜냐면 브라우저 URL창에 때려박는건 서버에게 요청하는거지 
+   리액트 라우터에게 라우팅 요청하는게 x 
+리액트가 라우팅하게 전권을 넘기고 싶다면 server.js 에 다음과 같은 코드를 밑에 추가
+
+   (server.js에 추가)   
+   app.get('*', function (요청, 응답) {
+         응답.sendFile(path.join(__dirname, '/react-project/build/index.html'));
+   });
+
+별표 * 라는 것은 모든 문자라는 뜻입니다. 
+"고객이 URL란에 아무거나 입력하면 걍 리액트 프로젝트나 보내주셈"이라는 뜻 이렇게하면 리액트 라우팅 ok 
+이 코드는 항상 가장 하단에 놓아야 잘됨       
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<img src={process.env.PUBLIC_URL + '/logo192.png'} /> //이런식으로 process.env.PUBLIC_URL + './' ; 처리를 해줘야 주소 + 어쩌구 + 경로에 
+배포해도 파일못찾는 에러 안 발생함
+
+
+html style로 속성에다가 그림 경로 적고 불러올때 import 적어야함 
+
+div안에 img의 너비를 지정할때 상위 div의 크기를 반영한 % 너비임

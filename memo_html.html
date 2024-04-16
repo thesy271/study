@@ -1,0 +1,211 @@
+<script>
+/*
+1 모든 'div'는 display: block가짐(가로행 전부 차지) // h, p 태그도
+
+div 2개를 오른쪽 왼쪽 배치시,두개 다 float: letf(혹은 float: right) 써야 안겹치고 같은 행 나란히 배치
+
+float 다음에 오는 요소는 clear: both를 해야 다음에 오는 이상현상 해결가능 *tip: float다음에 오는 style="clear: both" 속성을 갖는 빈 div를 만들면 다음에 오는 소스 css활용이 용이해짐
+
+(display: block) + margin-left: auto, margin-right: auto; 해주면 가운대로 정렬됨
+
+2 selector selector> : ~안에 있는 직계 자식 ex) .nav>li{ ... } selector공백 : ~안에 있는 모든 자식 ex) .nav li{ ... } url 경로 입력시 ../ : 상위폴더로 이동
+
+*css적용에서 우선순위 style: 1000, id: 100, class: 10 3 div안에 배경사진을 넣을 때 background-image: url(../img/shoes.jpg); background-size: cover; 꽉채우게 background-size: contain; 꽉채우는데 짤리지 않게 background-repeat: no-repeat; 채우다가 height에 안맞으면 반복되는데 반복이 안되게끔 background-position: center; 이미지를 가운데로 ackground-attachment: fixed; 스크롤 넘겨도 사진은 고정되게
+
+margin 과 padding의 차이 magin은 border(가장바깥선)을 기준으로 여백, padding은 border안에서 안에 content와의 여백임
+
+magin collapse 현상: border안에 div랑 선이 겹쳐지면 div의 magin을 줄때 border에도 margin이 생겨서 적용됨( margin이 큰쪽으로 적용되는 현상) 방지하려면 padding을 주던지 해서 테두리 안붙게 함
+
+*position => margin말고 좌표로 이동하기 & 공중에 뜸 position: relative : 내원래 위치가 기준/ 설정 후 top, left, right, bottom등으로 '좌표로' 이동가능 position: static : 좌표이동 x position: fixed : 현재화면이 기준 position: absolute : 부모태그가 중 relative가진 부모 기준 /0일때 relative부모기준으로 늘어날수 있으니 witdh로 폭 조절
+
+4 width의 퍼센트는 부모의 비율에 비례한 값임 width는 padding 범위의 안쪽인 content의 width값을 의미해서 max-width와 상관없이 padding값을 늘리면 전체 box크기도 늘어남 => 보완: box-sizing : border-box; 하면 width가 padding, bordder 포함임 width로 폭을 설정해야 margin-left= "auto"; margin-right="auto" 시에 가운데 정렬이 됨
+
+z-index 값이 클수록 앞에옴
+
+최대폭지정 max-width : 부모바탕이 늘어나도 최대 폭까지만 늘어남
+
+margin은 display:block; 일때뜸
+
+**css 1)selector에 콤마쓰면 여러개 동시 선택가능 2)재사용 가능하게 3)label for=idVal -> id값이 일치한 체크박스에도 표시됨
+
+5 vertial-align : inline/inline-block요소간에 세로 정렬 시 씀 display: inline : 항상 옆으로 채워지는 폭과 너비가 없는 요소
+
+6 table 부모셀렉터 nth-child(n) : th인 자식 셀렉터중 두번째인것만 선택 td copspan="n" : td셀 5개를 하나로 합침
+
+7 :hover 커서 닿을때 :focus 커서찍혀있을때 :active 클릭중
+
+a링크 text-decoration: none : 밑줄 사라짐
+
+8 class 작명할때 고민되면 BEM(Block__Element--Modifer) => 요새는 react, vue 쓰면서 잘안씀
+
+class="덩어리이름" ex) div class="profile"
+안에 있는 태그들은 각 역할에 따라 profile__역할 ex) profile__button
+class="덩어리이름__역할--세부특징" ex) profile__button--red
+9 폰트 등록 @font-face { font-family: ''; src: url() } 한글 폰트는 용량이 많아서 .ttf말고 줄이려면 .woff 사용 font-weight : n ; 굵기 올라감
+
+or 구글폰트사용시 호스팅해주는 트래픽 절약 //https://fonts.google.com/
+
+폰트깨져보일때 글씨관련 태그로 css처리, 더 부드러워짐 ex) h1,p,span { transform: rotate(0.03deg }
+
+10 display: flex -> 부모에다가주면 안에 박스 가로배치 쉬워짐 안에 박스의 width설정해도 100는 아니고 최대한 맞추려고 노력하는 느낌으로 설정 display: flex + justify-content: center 가운데 정렬 display: flex + flex-direction: column 세로배치 flex-wrap: wrap 은 안에 내용물이 넘치면 밑으로 보냄 display: flex + align-item: 가로로 정렬된상태에서 상하정렬 안에 내용물에서 style="flex-grow" -> 박스크기를 비율로 설정가능
+
+**Tip vsCode 태그1(. or #){이름}>태그2(*n) 입력 후 탭키 : 태그1안에 클래스나 아이디값이 이름인, n개의 태그2가 들어있는 덩어리 생성
+
+11 css파일의 경로 
+
+<head>
+    <link href="css/main.css" rel="stylesheet">
+</head>
+
+1) css/main.css : 현재 html파일과 같은 경로에 있는 css폴더내의~
+
+2) /css/main.css : '/'은 현재 사이트 메인경로를 의미함
+
+
+12 <style> 태그, 보통 <head>안에 넣음
+- <body> 태그 안에 넣어도 동작은 하지만 html은
+순서대로 읽어서 깨질확률 up, 그래서 보통 <head>안에 넣음 
+
+13 반응형 웹만들때 <head>안에 <meta>의 값
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="html 잘하는 코딩애플입니다.">
+  <meta name="keywords" content="HTML,CSS,JavaScript,자바스크립트,코딩">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+- width=device-width는 모바일 기기의 실제 폭으로 렌더링 해주세요 
+- initial-scale=1 이 부분은 접속시의 화면 줌레벨 설정
+=>  반응형 웹을 만들 때 저 meta 태그를 복붙하시고 시작
+
+
+14 favicon
+
+<head>
+  <link rel="icon" href="아이콘경로.ico" type="image/x-icon">
+</head> 
+
+- ico 대신 png 파일로 넣어도 됩니다. ico가 호환성은 가장 좋습니다. 
+- 요즘은 32 x 32 사이즈로 제작 
+-OS마다 요구하는 rel 속성이 달라서 필요해지면 찾아 적용
+
+15 반응형 레이아웃 
+
+
+width: vw 반응형으로 브라우저 가로크기에 비례함
+    rem : 기본 폰트 사이즈에 비례:  
+    -> 16px : 10 *  16px의 
+heigt: vh 반응형으로 브라우저 높이에 비례
+
+@media screen and(max-width: 1200px){
+     .main-title{
+        font-size: 30px
+     }
+      .main-content{
+     font-size: 16px
+     }
+}
+
+@media screen and(max-width: 768px){
+     .main-title{
+        font-size: 16px
+     }
+      .main-content{
+     font-size: 8px
+     }
+}
+=> 화면 작게 축소하면 폰트도 작아짐(폰트 이외에 스타일 뭐넣든 상관 x) 
+   현재 브라우저 폭이 1200px이하면 폰트 저렇게 적용해란뜻, 
+   여러개 쓸수도 있는데 max-width 큰거에서 작은거 순서대로 씀
+   @media 쿼리는 css 페이지 맨 밑에 있어야 잘작동됨
+     
+16 IE 호환성 잡으려면 IE를 위한 CSS파일만들기
+ ex) display : flex는 IE 11 부터 먹힘
+
+조건부로 css 첨부, 적용 
+[if lt IE 10]
+<link href="css/ie.css" type="text/css" rel="stylesheet"/>
+[end if]     
+   
+
+17 fontawesome 적용
+border-radius 크게 주면 뒷배경 원으로
+   border-radius: 50px;
+   box-sizing: border-box;
+   *padding-top : 이건 경우에따라 알아서 적용
+   *글씨는 content영역임
+   ㄴ> 이렇게 적용시켜서 뒷배경 원으로
+
+
+18 transition(위에 있는 style이 변하며 1초동안 서서히 변경)효과
+
+사전에 overlay <div> 를 만들어서 똑같은 크키의 div상자를 위에 만듬 
+   부모에 position: absolute준다음
+   .overlay{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: black;
+      opacity: 0.5; <-투명도 0-1
+   }
+
+   OR -> background 자체를 반투명하세 
+   .overlay{
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      
+   }
+   한 후,
+   .overlay: hover{
+      opacity: 1;
+      
+   }
+
+   한 후 
+   overlay에
+     transition: all 1s;처리하면
+     '모든' style이 변할때 1초동안 서서히 변함
+
+   overflow: hidden; overlay로 효과쓸때 다른 구역 침범하는 부분 제거 
+
+
+   *배경색 그라데이션 : background: linear-gradient (방향, 색1, 색2, ..., 색n)
+
+
+
+
+  *float쓰고
+  나중에 밑에 div박스를 추가하든 하셔서 clear : both 속성을 주는거 잊지말기
+
+19 bootstrap : 개발시간 단축 / 반응형 레이아웃
+
+1 bootstrap.min.css
+2 bootstrap.bundle.min.js 가져와서 html에 넣어야함
+
+*반응형 레이아웃 class 부착형
+container > row > col
+
+row 안에 col :균일하게 나눠짐
+row 가상으로 12칸 
+col-n은 n만큼 등분함
+
+반응형 장점 : 
+col-md-6 : md사이즈 이상만 칸나눔
+col-lg-6 : lg이상만 적용 그 밑은 없는거나 다름 없음 
+
+lg>md>sm = pc>태블릿>모바일
+
+즉, @media 문법없이도 반응형 레이아웃 개발가능
+
+order-숫자 부탁해서 div순서 재배치도 가능
+
+*/
+
+
+
+
+
+</script>

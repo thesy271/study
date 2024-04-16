@@ -1,0 +1,256 @@
+document.getElementByClassName('a')[0]
+-> 이런식으로 class로 선택시 인덱싱 해야함 
+
+addEventListener('click', function(){})
+-> 이벤트 효과 / 파라미터자리에 들어가는 함수 : 콜백함수
+
+class 붙이는 법 : classList.add('클래스이름');
+->document.getElementsByClassName('list-group')[0].classList.add('show');
+->반드시 [idx]붙여야함 그리고 style.중간속성값 = '값' ; 이런식임
+
+querySelector document.querySelector('.클래스이름');
+-> 맨위에 요소만 찾아줌
+-> document.querySelectorAll('.클래스이름')[idx] 로 씀
+
+jqeury 쓰려면
+구글에 jqeury cdn 검색
+링크 넣은 이후에 제이쿼리 문법 사용 가능
+
+
+-$() : querySellector(All) 과같은 뜻  
+- innerHTML = html() : class들 전부다 변경됨
+- addClass() , css('color', 'red') 등 함수 존재 
+-addEventListener() = on()
+
+one-way UI 애니메이션
+1시작 스타일
+2최종 스타일
+3원할 떄 최종스타일 코드짬
+4transotion
+css: opacity : 0-1 투명도
+    visibility : hidden = display: none이랑
+    비슷한데 에니메이션 효과줄때 더 잘먹어서 씀
+
+
+중괄호({}) 끝나는 부분은 세미콜론 생략 가능
+소괄호는 써주기 
+
+input change 차이
+값바꾸고 change는 포커스 다른대로 이동해야 실행됨
+
+js 문자열 크기 value.length 임 괄호안붙음
+
+-변수선언
+ var 이름;
+-변수 할당 = 자료넣기
+ var 이름 = 'kim';
+-변수 범위
+ 함수 안에서 변수 만들면 사용범위는 함수 내부 
+
+* var, let, const 차이
+-let : 재선언 x, 재할다 o / {} 안에서만든것도 사용못함
+-const : 재선언 x, 재할당x / {} 안에서만든것도 사용못함
+-var: 재선언o, 재할담o / 범위 function안에서 만든거  사용못함 
+
+
+setTimeout : x초 후 에 실행
+- setTimeout(function(){ }, x + 1000);
+setInterval : x초마다 실행
+- setInterval(function(){ }, x + 1000);
+
+setTimeout(), alert(), document.querySelector() -> js문법x, 브라우저 사용법
+
+정규식
+/정규식/.test('문자열') : 참 거짓으로 결과 ; 
+/\S/ : 아무문자 1개
+/{^}a($)/ : a로 {시작}(끝)?
+
+. 은 특수한 문법, \. 로 검사해야함
+/\s+@\s+\.\s+/.test('abc@gds.com')
+regex test
+
+js 반복문 for문 쓸 때 script안에 var말고 let 써야 잘됨
+변수 범위 때문에 
+
+여러개 찾아주는 selector로 요소.length는 해당 요소의 갯수임
+
+이벤트 버블링: 뒷까지 효과가 전해지는 현상
+
+*
+    e.target; //유저가 실제로 누른것
+    e.currentTarget; //이벤트리스너 달린 곳
+    this;
+    e.preventDefault(); //클릭안한것 처럼 동작해라
+    e.stopPropagation(); //내 상위요소로 이벤트 버블링 막아줌
+
+주의) document.querySelector != $()결과는 다르게 생김
+제이쿼리비교시 $(e.target) == $('.black-bg') : 이렇게 쓰는 것이 안전
+
+*이벤트 리스너 줄이면 이점이있음
+
+*dataset
+dataset.id <-  data-id="n" 이렇게 활용가능
+-> 브라우저 11이상만 데이터 셀렉터.dataset.이름 이 작용하므로 
+안되면 jquery써서
+데이터 넣을때
+$().data.('데이터이름','값');
+데이터 출력할때 
+$().data('데이터이름');
+
+
+*forEach(function(a,i){})
+a:  배열안에 내용물
+i: 배열 반복마다 0부터 1씩 증가하는 정수 
+
+* for(key in obj)
+obj = {key1: v1, key2:v2} ;
+oject의 key값이 반복됨
+
+*arrow function 문법
+
+pants.forEach(function(a){
+
+}) 과,
+
+pants.forEach((a) => { }) 은 동일함 / but, arrow function을 쓰게 되면 함수안의  this의 뜻이 달라질 수 있음
+
++ 
+
+(a => {return a.price <= 60000 } )에서 파라미터 1개면 (a) 말고 
+위처럼 생략 가능 또한 return 한줄 밖에 없으면, 위처럼 return 과 중괄호 동시 생략가능
+
+
+*ajax
+서버 : 데이터달라고 하면 데이터 보내주는 프로그램
+get/post 요청시 브라우저 새로고침됨
+
+-get요청시
+$.get('https://codingapple1.github.io/hello.txt')
+ .done(function(data){
+    console.log(data);
+
+ }); <- 성공시 나오는 콜백 함수   
+ 
+ -post요청시
+ $.post('https://codingapple1.github.io/hello.txt', {name: 'kim'})
+ .done(function(data){
+    console.log(data);
+ }).fail(function(){
+    console.log('실패함');
+ });  <-실패시 fall과 콜백함수 붙임
+
+*fetch(브라우저 기본 ajax함수)
+서버와 유저는 문자된 데이터만 주고받을수 있음-> object나 array 보내려면 JSON으로 보내야함
+따라서 위에처럼 done fail 보다, then 1개 더 있음 <-받아온 json을 object로 다시 변환
+
+fetch('https://codingapple1.github.io/hello.txt').then(res=> res.json()).then(data => { 
+        console.log(data);
+}).catch(error=>{ console.log(error)});
+
+
+*복습 JS로 html 만들기
+1 var a = document.createElement('p'); 
+a.innerHTML = '안녕' => <p>안녕</p>
+2 템플릿 => ex) '<p>안녕</p>';
+제이쿼리셀렉터.append(템플릿);
+3 자바스크립트셀렉터.innerHTML =템플릿; \
+
+*js) sort, map, filter
+1 sort : 정렬 / 원본 변형 o
+array.sort(function(a,b){
+    return a - b; 
+}) <- 작은거에서 큰 순으로 
+
+2 filter : 조건에 해당하는 배열만 남김 / 원본 변형 x
+ 
+3 map : array 자료 전부 변형 / 원본 변형 x
+ 
+*** DOM 이란?
+js는 HTML 조작에 특화된 언어,
+자바스크립트가 어떻게 HTML 조작할 수 있는지 원리...
+<p>이런 html를 직접해석할수있게 변환..
+
+)1 .브라우저는 html 를 자바스크립트로 쉽게 찾고 바꾸기 위해 obj와 비슷한 자료형에 담음
+
+var document = {
+    div1 : {
+      style : {color : 'red'}
+      innerHTML : '안녕하세요'
+    }
+  } 이런식으로...
+
+위 변수를 Document Object Model 이라고 불러서 DOM임
+
+=요약하자면 자바스크립트가 HTML에 대한 정보들 (id, class, name, style, innerHTML 등)을 object 자료로 정리한걸 DOM이라고 부릅니다. 
+
+)2. 브라우저는 HTML 문서를 위에서 부터 읽으며 DOM을 생성합니다.
+즉, script 설렉트 대상이 script아래에 오면 에러남 -> 이렇듯 자바스크립트는 DOM이 생성된 경우에만 HTML을 변경할 수 o 
+
+3.혹은 자바스크립트 실행을 나중에 미루는 방법 2가지(DOM생성 체크)
+$(document).ready(function(){ 실행할 코드 }) 
+document.addEventListener('DOMContentLoaded', function() { 실행할 코드 }) 
+
+3-1 (이미지, css, js 파일 로드 확인)
+셀렉터로찾은이미지.addEventListener('load',function(){})
+
+3-2
+$(window).on('load', function(){
+    //document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드 
+  });
+  
+  window.addEventListener('load', function(){
+    //document 안의 이미지, js 파일 포함 전부 로드가 되었을 경우 실행할 코드
+  })
+  window에 붙이셔도 됩니다. document에 포함된 이미지, CSS파일 등 모든것이 로드가 되었는지 체크해줍니다. 
+  ready 이런거랑 차이는 앞선 .ready()는 DOM 생성만 체크하는 함수인데,
+  이것보다 약간 더 나아가서 모든 파일과 이미지의 로드상태를 체크한다고 보시면 됨, 속터짐
+
+*localStorage
+key, value 값으로 저장 5mb이하의 문자, 숫자만 가능
+localStorage.setItem('key','value'); /set,get,remove
+**..array, object 저장(강제로)하는 법 => json으로 바꾸면됨
+JSON.stringify(arr);  obect,array를 JSON으로   
+JSON.parse(꺼낸거); <- JSON을 obect,array로
+
+*쌩 자바스크립트는 
+addEventListener를 붙이는 설렉트는 한요소에 대해서만 가능. 즉, 설렉터가 document.querySellectorAll('.')이면 x,
+jquery는 그런거 없음
+
+*position: sticky(부모박스 벗어나면 해제) / fixed와 유사(화면 전체에서 고정)
+-주의점: 1 스크롤할 부모박스가 있어야함
+        2 image box에서 top 등 좌표속성도 같이 적어야 작동
+
+
+*모던 자바스크립트
+-npm: js라이브러리 쉽게 설치 수정 삭제 가능 / nodeJs설치시 딸려옴
+-nodejs: 자바스크립트 바로 실행가능, 브라우저 안띄워도 미리보기 가능
+-번들링 프로그램(bundle/build tool): webpack등 : 안쓰는 함수 제거, .ts .vue .jsx .js로 변환해줌. ,최신문접을 호환성 좋게 바꿔줌, npm run dev: 실시간 프로젝트 미리보기
+-spa : single page webapplcation : 자바스크립트로 html 동적으로 생성, 변경 매우 쉬워짐
+-client side rendering: js으로 html 동적 생성 변경하는 것  
+-spa 라이브러리 단점 : 1수많은 변수 관리가 어려움, 프론트엔드에는 db가 없어서 이걸 관리하기 쉽게 하는 외부 라이브러리 이용해야함 ex) redux .. 
+                      2 구글 검색결과 노출 어려움 3 첫페이지 로딩시간 끔찍
+-state management
+React, Vue 같은 라이브러리 설치해서 쓰면
+컴포넌트 : html 덩어리들을 재사용하고 싶을때 쓰는 html 들어있는 함수
+근데 그 컴포넌트끼리 변수를 공유하는게 매우 어렵기 때문에 그걸 쉽게 도와주는 라이브러리를 또 설치하여 씀 
+ex) Redux toolkit, Zustand 
+
+
+-server side rendering : html을 서버에서 만들어서 보내줌 --> next.js 등 이용시 js(react문법)으로 풀스택 개발가능
+-TypeScript: .ts / 문법은 js 똑같은데 타입지정함 후에 bunding tool 이용하여 .js로 변환해야함  
+-서버만들줄모르면 회원인증, DB입출력, 기타 서버기능 알아서 해줌 : ex) Firebase
+
+
+-meta-framework 
+React, Vue로 client side rendering을 하게 되면 검색엔진 노출이 늦거나 패널티가 있고
+그리고 js 파일 사이즈가 커져서 첫 로딩시간 증가
+그래서 React, Vue 문법으로 server side rendering을 하고 싶으면
+Next.js Nuxt.js Sveltekit 라이브러리이용가능
+
+ 
+
+ 
+
+
+
+
