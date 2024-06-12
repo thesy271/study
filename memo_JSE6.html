@@ -1,0 +1,730 @@
+[this]
+
+1 그냥 쓰거나 함수 안 => window
+    window란? 모든 전역변수, DOM을 보관하고 관리하는 전역객체
+    1-1. IE10 버전이상에서 'use strict' 키워드 최상단 추가 시 undefined 값 강제 지정
+
+2 object 내에 함수가 있을때 => 그 object를 뜻함 (제일 중요)
+    JS object에 키에 대한 값으로 함수를 넣을 수 있음
+        object에 들어가는 함수 : method
+    -1번내용을 포괄하는 말이 됨
+
+3 constructor안  => constructor로 생성되는 object
+    function 기계(){
+        this.이름 = 'Kim'
+    }
+    var 오브젝트 = new 기계();
+    //여기서 오브젝트 {이름: 'kim'}
+
+4 eventListener안 => e.currentTarget(지금 이벤트가 동작하는 곳)
+
+함수 안에 들어가는 함수 : 콜백함수
+this값 판단할때 this랑 가장 가깝게 둘러싼 function()에 맥락으로 바꿈
+ex) 4변의 이번트 리스터 콜백함수 안에 forEach의 콜백함수에서 this => window 의미
+
+*함수 만들때 
+1) function 함수() {}
+2) var 함수 = function(){}
+3) JSE6 신문법 => var 함수 = ()=>{} 
+
+3) 을 쓰면 좋은 이유,
+- 파라미터 하나면 소괄호 생략가능 ex) x => {return x + 1}
+- 중괄호 한줄이면  중괄호와 return 생략 가능 (x)=> {return x+1} 을, x=> x+1
+- arrow function 안에서의 의미로 변하지 않고 그 밖에 의미를 그대로 씀
+ex) 오브젝트 = {
+    함수: ()=>{console.log(this)} 
+} 여기서, this는 오브젝트가 아닌, window를 의미 
+
+ㄴ**정리 : >  
+this 값은 function만나면 의미가 바뀔 수 있지만
+단, arrow 함수로 바꾸면 내부의 this값을 바꾸지 않음
+funtion 과 arrow 함수를 쓸때 this 조심
+
+어떤 obj안에 함수를 추가 할수 있음
+ex)  var 자료 = {
+    data : [1,2,3,4,5];
+} 여기에 자료.전부더하기= function(){} ~ 이게 추가임 
+
+[변수 선언 할당]
+-선언: var, let, const 키워드 이용하여 변수만듬(등호없어도 변수만들어짐)
+var: 재선언 가능, 재할당 가능
+let: 재선언 불가능, 재할당 가능
+const: 재선언 불가능, 재할당 불가능 
+ㄴ>(단, obkect내에 데이터 변경은 가능
+    ex) obj.이름 = 'park'; )
+ㄴ>완전 변경 불가능한 오브젝트 : Object.freeze(obj) : 단, 오브젝트 내에 오브젝트까지 변경불가능하지 x
+
+**변수의 존재 범위 
+let, const : 중괄호 => 중괄호에서 변수만들면 중괄호 내에서만 그 변수 부르고 사용가능
+var : 함수 => 같은 맥락으로 함수, 중활호 (ex)if)문에서 선언하면 사용가능
+
+***[호이스팅, 전역변수 ,참조]
+-호이스팅: 자바스크립트는 변수나 함수의 
+    '선언'부분을 변수의 범위 "맨 위로" 강제로 끌고가서 
+    가장 먼저 해석
+    ex)
+    function(){ 
+        console.log('hello');
+        var 이름 = 'park'
+    }
+    ㄴ> {}안에 해석시,
+            var 이름; 
+            console.log('hello');
+            이름 = 'Kim';
+        이순서로
+
+-변수 여러개 편리하게 만들기
+var 이름, 나이, 성별; 
+var 이름='kim', 나이, 성별; <-이것도 가능
+
+-*전역변수 : 모든 함수, if, for 등 공통적으로 사용할 수 있는 변수
+쌩으로 전역변수를 만들면 window에도 보관이됨. (let말고 var 키워드만)
+ex) var 나이 = 20; 
+    console.log(window.나이) //20
+-*for문 쓸때 (var 와 let)
+만약 for문을 쓸때 
+for(){
+    버튼들[i].addEventListener('click', function(){
+        모달창들[i].style.display = 'block';
+      });
+}
+내부의 함수가 있는경우 반복문이 두개가 동시에 i변수가 값이 할당되지 않는다.
+그래서 시간차가 일어나는데 var 전역변수와 달리 변수 범위가 중괄호기 때문에
+i = 어쩌구 값이 {for 반복문} 내에 남아있기 때문에
+모달창들[i].style.display = 'block'; 에서 갖다 쓰게된다.
+마지막 i값으로 
+내부함수가 채워지게 된다.
+이런경우를 방지하기 위해선 for에 let키워드로 변수를 선언및 할당하도록 한다.
+
+[Template literals]
+백틱으로 감싸진 문법
+용법 : `나는${변수}입니다.` = "나는+"+변수+"입니다."
+-Tagged Literals
+해체함수(첫번째, 두번째,...)
+해체함수`나는${변수}입니다.` 
+ㄴ> 해체함수내부에서 첫번째라는 파라미터는 ['나는','입니다.'] 의 array임
+                   두번째파라미터 부터는 n-1번째 변수하나씩 할당된다.
+
+                   
+
+[default parameter, arguments]
+
+1. default parameter :
+    함수에서 파라미터를 안적을 경우(JSE5부터)
+    그 파라미터의 기본값을 설정하는 역할. 
+
+    ex) 기본값을 주고  싶으면 등호로 설정하면됨
+    function 연산 (a, b = a * 2){
+        console.log(a + b);
+    }
+    에서 연산(1,1)의 결과는 2
+    default paramter가 적용하여 연산(1)을 발동하면 b = 1*2, 결과로는 3이 나옴
+
+2. arguments : 파라미터를 []안에 싸매줌
+function(a, b, c){
+    console.log(arguments);
+}
+-> 콘솔에 a,b,c 가 나옴 
+
+
+[rest paramter] : argument와 유사한 기능이고(근데 이건 옛날방식으로
+rest 파라미터보다 요새는 이걸씀), Spread Operate와 표기는 같음.
+
+파라미터에 오는 특정부분만  
+...처리해서 그것들을 array로 헤서 뽑아낼수 있음
+
+functino 함수2(a,b,...rest){
+    console.log(파라미터들 )
+}
+함수2(1,2,3,4,5,6,7) 에서, 
+콘솔에 3,4,5,6,7만 찍힘
+
+-주의점 : 
+1 파라미터 가장 뒤에 써야함 // ...restParam, a, b 이런식 x
+2 restPrameter를 두번 이상 매개변수에 쓰는거 x //  ...restParam, ...restParam2 이런식 x
+-참고
+자바스크립트 함수에서는 파라미터를 집어넣지 않았을 경우 파라미터가 자동으로 undefined
+즉, function default(undefined, undefined)에서는
+function default()과 같이
+파라미터 두개가 다 default 함수 처리될 요건임 
+
+***[괄호를 없애주는 Spread Operate]
+
+var 어레이 = ['hello','world'];
+console.log(...어레이) = hello world => 어레이의 괄호를 없애줌
+
+-쓰임새
+
+1 배열합치기 가능
+    배열 a , b를 합치려면 var c = [...a, ...b] ; 이런식으로 가능
+2 배열 복사
+    var a = b 이러면 b 값이 변하면 a값도 변한 b값을 따라가는데
+    배열에 대해 가르키는 화살표를 복사한 것과 같기 때문이다.
+3 obj 합치기 가능
+    ex) var obj2 = { a: 1, ...obj1};
+    (단, obj1에도 a라는 키값이 존재한다면, 무조건 뒤에오는 a값이 담김)
+4 spread 연산자는 
+    함수소괄호, 
+    오브젝트 중괄호내, 
+    어레이 대괄호내에서만 사용해야 에러안남.
+
+5 array내의 모든 데이터를 파라미터로 넣고 싶은경우 => spread 연산자
+    함수(...arr) ; <-이런식 
+    
+***[apply, call]
+-공통적인: 함수를 옮겨와서 실행해주세요
+persion.인사.apply(person2);
+-차이점: 파라미터 받을때,
+persion.인사.apply(person2,[1,2]); 인사(1,2) : 이런식으로 배열형식의 파라미터 가능
+persion.인사.call(person2,1,2); : 배열형식파라미터는 안됨
+
+
+*****[sync, async]
+sync = 동기 = 코드가 순서대로 실행
+async: 비동기
+
+자바스크립트는 항상 동기식 처리
+but,
+setTimeout()같은 함수를 제쳐두고 다른 코드부터 실행
+=> 제쳐두고 다른 코드부터 실행시킴 => 이런처리방식이 비동기
+
+[Reference data type]
+
+1 primitive type(값 자체를 담음): 변수에 값이 '그대로' 저장됨
+2 Reference type(화살표 담음): array, object 변수에 값이 아닌 값을 가르키는 주소가 저장됨
+  
+1과 2차이
+1의 값이 바뀌기 전 다른 변수에 값을 담으면 바꾸기전 값 그대로 담기지만
+2의 경우, 값자체가 아닌 주소가 저장됨에 따라 
+다른 변수로 복사하면 화살표들이 같은 값(같은 주소)을 가르킴
+
+**특이한 경우 ; 파라미터는 변수 생성, 할당과 똑같다
+즉, 파라미터 변수 = {} 해도 원래 파라미터 값에는 변화가 없음
+즉, 
+    (인간의 시점)
+
+    var 이름1 = { name : '김' };
+    function 변경(obj){
+    obj = { name : 'park' };
+    }
+    변경(이름1);
+
+    --> 이름1[name] = '김'
+
+    (자바스크립트의 시점)
+
+    var 이름1 = { name : '김' };
+    function 변경(obj){
+    obj = { name : 'park' };
+    }
+    변경(var obj = 이름1);
+
+    --> 이름1[name] = '김'
+
+[Construct로 각각의 object만들기]
+- function으로 만듬
+
+function 기계(){
+    this.name = 'kim',
+    this.age = 15,
+    this.sayHi = function(){
+        console.log('안녕하세요' + this.name + '입니다');
+    } 
+}
+//this는 새로 생성되는 object를 뜻함(= instace)
+
+var 학생1 = new 기계();
+
+[prototype] = 유전자, 값을 추가하면 모든 자식들이 물려받기 가능.
+자바스크립트만 있음, '상속을 구현할 수 있는 또 하나의' 문법임.
+생성자를 만들면 prototype이라는 공간이 자동으로 생김.
+
+즉, 
+기계.prototype.gender = '남';
+
+var 학생1 = new 기계('Park');
+ 
+ 1. 동작 원리
+(1)학생1이 직접 gender를 가지고 있나? 
+(2)그럼 학생1의 부모 유전자가 gender를 가지고 있는가? 
+그럼 실행!
+
+학생1.toString(); 에서,
+ 
+(1)학생1이 직접 toString()을 가지고 있나? 
+(2)그럼 학생1의 부모 유전자에 있는가? 
+(3)그럼 부모의 부모 유전자에 있는가?
+그럼 실행!
+여기서 알수 있는것은 내장 함수가 동작하는 방식이다. 
+sort(), map(), push()..., 이런것들이 시사하는 바(array의 프로토타입이 가지고 있는것) 이다.
+
+ 2. 특징
+    1) 함수에만 몰래 생성됨 ex) 기계.prototype.gender = '남'; 이런식으로.
+    2) 부모 유전자를 검사하고 싶으면 '__proto__'
+        ex) 학생1.__proto__ => {gender:"남", constructor: f}
+    3) __proto__ 를 이용해 부모님 강제 등록
+     ex)
+        자식.__proto__ = 부모 ;
+        하면 부모의 속성인 name이 강제 등록되서 자식.name 입력시 등록된 값이 나옴
+    4) 콘솔창에서 알려주는 prototype chain
+
+    *참고
+    arrow function과 this 
+    this 함수안에서 재정의 or object안에 함수안에 this는 그 오브젝트를 뜻함
+    //함수 안에서 this뜻이 재정의 되지 않고 바깥에 있는 this를 그대로 사용
+    
+ *참고2 ) 배열 함수에 특정함수를 만들고 모든 배열에 적용하는법
+ Array.prototype.특정함수 = function(){
+    this~ //이런식으로 array함수를 쓰지않고 재정의 가능함
+
+ }
+
+ *복습 find, filter:
+ 차이 : 
+ find는 배열에서 조건에 만족하는 첫번째 값 반환 // 값이 없으면 undefined 반환
+ filter는 배열에서 조건에 만족하는 배열을 반환 // 없으면 빈배열 반환
+    
+[ ES5방식으로 쉽게 구현하는 상속기능 ]
+ // prototype, function(){} => 2009 까지 ES5보다 옛날 문법임
+
+Object.create(부모); -- prototype을 부모로 해주세요
+
+var 부모 = { name : 'Kim', age: 50} ;
+var 자식 = Object.create(부모); 
+console.log(자식) => {} 
+그런데, 
+console.log(자식.name) => "Kim"
+
+자식 name의 값 변경하고 싶으면 자식.name = 20; 하면 적용됨
+var 손자 = Object.create(부모);
+손자.age = 20 임 // 부모가 아닌 자식의 값을 받아옴
+
+***[ES6로 구현하는 상속 기능] = class
+ex)
+    class 부모(){
+        constructor(){
+            this.name = 'Kim';
+            //this.sayHi = function(){
+                console.log(~);
+            }
+        }
+
+        //sayHi(){
+            console.log(~);
+        }
+    }
+var 자식 = new 부모();
+
+단, 함수 추가시 생성자에 
+1)생성자 추가
+2)class안 생성자 밖에 추가 : 부모 prototype에 추가됨
+
+자식.__proto__ = 부모.prototype = Obeject.getPrototypeOf(자식);
+
+***[class를 복사하는 extends / super ]
+
+class 할아버지{
+    constructor(name, name2){
+        this.성 = '김';
+        this.이름 = name;
+        this.이름2 = name2;
+    }
+
+    sayHi(){
+
+    }
+}
+
+class 아버지 extends 할아버지(){
+    construnctor(name, name2){
+        this.나이 = 50; 
+        //extend 해서 만든 class는 this를 그냥 못쓰고
+        super() 다음에 써야함 
+        ** super(name,name2)는  
+        this.성 = '김';
+        this.이름 = name; 
+        this.이름2 = name; 
+        을 써주는거라고 봐야함
+    }
+}
+
+    super() 는 뜻이 2개임 즉, class상속받는 자식에게서 
+        1 자식의 constructor 안에서 부모 class의 constructor 전달받는 기능
+        2 부모의 prototype에서 가져와서 자식의 prototype에 써먹는 기능
+    이 있다. // ex) super.sayHi() 이런식으로 아버지의 프로토타입에 등록할 수 있다. 
+
+
+
+[ getter setter]
+
+var 사람 = {
+    name : 'Park';
+    age : 30,
+    nextAge(){
+        return this.age + 1;
+    },
+    setAge(나이){ 
+        this.age = parseInt(나이);
+    }
+}
+
+함수를 만들어 objext데이터를 다루는 이유
+1. object 자료가 복잡할 때 이득
+2. object 자료 수정시 편리
+    사람.age = '20';
+    //사람.setAge(20) ;
+    => ES5부터는 get/set 키워드를 앞에 설정하는 함수에 한해서 
+    사람.setAge = '20'; 
+    이런식으로 소괄호 입력안해도됨
+
+var 사람 = {
+    name : 'Park';
+    age : 30,
+    get nextAge(){
+        return this.age + 1; //  get 함수는 return이 있어야함 + 파라미터 없어야함
+    },
+    set setAge(나이){ 
+        this.age = parseInt(나이); set 함수는 parameter가 있어야함
+    }
+}
+
+class에서도 가능
+
+class 사람{
+
+    construnctor(){
+        this.name = 'Park';
+        this.age = 20;
+    }
+
+    get nextAge(){
+        retyun ~
+    }
+
+    set setAge(나이){
+        this.age = 나이;
+    }
+    //여기서도 set get붙이면 소괄호 없이 할수있음
+    사람1.getAge 
+    사람1.setAge = 20;
+}
+
+***a instanceof b : a가 class b로부터 생성된 오브젝트인지 아닌지를 true/false로
+
+*callback함수(함수 안에 함수)에 쓰면 this쓰면 window객체 나올수 있음
+ arrow function을 쓰면 {}안이아닌 그 밖의 의미를 쓰므로 
+ arr.forEach(()=>{
+    this
+ })
+//여기서는 this는 인스턴스의 this임
+ arr.forEach(function(){
+    this
+ })
+//여기서 this는 window 객체임
+     
+[destructoring 문법]
+1) array안에 자료형안 데이터를 변수로 각각 할당 // array 위치로 판단
+ 
+var [a,b,c] =  [1,2,3] //  a=1, b=2, c=3
+var [a,b,c=3] =  [1,2] //  a=1, b=2, c=3 // []안에 데이터가 없어서 변수 할당이 안된경우 undefined임
+ 
+2) object안에 자료형안 데이터를 변수로 각각 할당 // object 변수명= key값으로 판단
+var {name, age} = { name : 'kim' , age : 20};
+*주의 :  위치를 맞추는게 아니끼 때문에, 변수명을 key명과 똑같이 써야함
+var {name, age =30} = { name : 'kim'} //도 가능
+저장되는 변수명이름 바꾸고 싶으면 var { name : 나이 , age =30} = { name : 'kim'} // 이런식으로 하면 할당도되고 변수이름도 변경
+var { name : 나이 ='Park'} = { } //이것도 가능
+
+3) 변수들을  object 에 넣고 싶은경우
+var name ='kim';
+ver age = 20;
+var object = { name : name, age  : age} ; 여기서 ES6문법으로, key값과 변수명이 동일하면 그냥
+    object = { name, age } ; 이렇게 쓰면 됨
++) 함수에서 
+
+(1) obj :
+    function 함수({name, age}){
+    console.log(name);
+    console.log(age);
+    } // 여기서 function( {name: 'kim', age: 20}); 이런식으로 함수문안에서도 destructuring 함수 거눙
+
+(2) array :
+    function( [name, age]){
+        console.log(name);
+        console.log(age);
+    } //위처럼 파라미터 배열 안에 변수 할당해서 함수 내부에서 사용 가능
+
+[ import / export ] : 내가 원하는 변수, 함수, class를 다른 파일로 보내기  // read-only만 가능(수정 불가능) 
+    (1) export default 
+        html 안에서 import(JSE6) 쓰려면 <script type="module"></script>을 써줘야한다. 또한 js 파일에  import a from 'library.js'; 이런식으로 import문을 남간더
+        ex)
+            (library.js)
+
+            var a = 10;
+            export default a;
+
+            ------------------------
+            (index.html)
+
+            <script type="module">
+            import a from 'library.js';
+            console.log(a);
+            </script>
+
+    (2) export // 여러개를 export 하는 경우
+            export {a, b}; 이런식으로 중괄호 해줌
+
+    (3) export / export default 동시 사용하면?
+            export {a, b};
+            export default c; 
+
+            ------------------------
+
+            import c, {a,b} from 'library.js'; 
+
+
+    (4) import 어쩌구 as 저쩌구로 변수명 바꾸기
+
+            export {a};
+            export default c; 
+
+            ------------------------
+
+            import c, {a as 새로운변수명} from 'library.js'; 
+
+
+    (5) * 기호로 모두 import 해오기 //  export 한 변수명이 너무 많을 경우 -> {}중괄호에 대해서 해당
+            export default c;
+            export {a, b, c, d};
+            ------------------------
+            import c, * as 변수모음 from 'library.js' // 중괄호 부분을 *으로 다 가져올 수 있음 
+            //단 as 로 변수명을 지정해야함. 각각의 변수를 가져올때 변수모음.a 이런식으로 써야함
+
+    +)옛날 문법
+
+    (export 하는 js파일)
+
+    module.exports.a = 10 ;
+
+    ------------------------
+    (import 하는 js파일)
+
+    var 가져온거 = require('/library.js'); 
+
+    ++ 참고사항)
+
+    그리고 import/export는 당연 IE 호환성이 없기 때문에
+    단순한 html css js 프론트엔드 개발시 JS파일을 HTML에 첨부시
+    <script src="경로"></script> 이걸 쓰도록 
+    혹은 모던 브라우저에선 <script type="module" src="경로"></script> 이렇게 하면 import export 문법이 사용가능
+
+[웹브라우저 동작원리]
+
+    웹브라우저 : 자바스크립트 실행해줌
+    stack에 코드 한줄 한줄 실행 // 한줄씩만 실행가능 = 싱글쓰레드 랭귀지 =  병렬처리못함 
+    처리 오래 걸리는건 대기실에 보냄 ex) ajax, 이벤트리스너, setTimeout
+    대기실 -> queue -> stack // stack이 텅비었을때 한줄씩 올려보냄
+
+    ex) JS에서 복잡한 for문이 있으면 그 뒤에 이벤트 리스너 동작안할수 있음
+    
+    교훈 1 stack, queue 바쁘게하지 x
+
+자바스크립트는 stack 한번에 하나씩 동기적 처리가 되는데
+가끔 비 동기적 처리 (즉, 대기실 거쳐서 실행되는거 말함)
+ㄴ> 자바스크립트는 파이썬과 다르게 코드의 순차적 실행을 보장하지 않는다.
+
++복습
+1) 동기 처리(synchronous) = 한번에 코드 한줄씩 차례차례 실행 (stack에서)
+
+2) 비동기 처리(asynchronous) 
+-콜백함수 : 함수 안에 들어가는 함수 
+-promise 디자인 패턴 
+ㄴ> 콜백함수의 더러운 가독성을 개선
+    ex)
+    
+    첫째함수(function(){
+        둘째함수(function(){
+            셋째함수(function(){
+                ....
+            })
+        });
+    }) 이거를
+
+    첫째함수().then(function(){
+        그 담에 실행할 것
+    }).then(function(){
+        그 담에 실행할것
+    })
+[JES6 Promise] : 성공/실패 판정 기계 //콜백함수 디자인의 대체품일뿐 비동기 함수 만드는 그런게 아님 
+    <script>
+        var 프로미스 = new Promise(function(성공, 실패){
+            var 연산 = 1 + 1; 
+            성공(10); // <- then에 전달하는 변수 
+        }); // 쓸수 있음
+        
+        프로미스.then( function(결과){
+            //10 이 전달됨
+        }).then(function(){
+
+        })
+    </script>
+    then promise가 성공(); 을 실행했을때 실행되는 콜백함수
+    catch promise 실패(); 했을 경우 실행하는 함수 
+-promise 의 3가지 상태
+1. 성공시 : resovoled
+2. 판정 대기중 : pending
+3. 실패 : resject 
+
++) ajax, fetch(쌩자바스크립트) :  Promise 적용 
+
+    1) ajax : //jquery설치가 되어있어야함
+        $.ajax({type: 'get', URL: '경로'})
+            or
+        $.get('URL경로')
+ex) fetch.then().catch() : 이런식으로 사용됨
+
+++ return) promise문 다른거를 연속적으로 하는 방법도 있는데 then이 2번이상쓰임.
+           이때 두번째로 발동되는 promise2를 return해서 전체 promise 문장에 then을 두번 이상 쓸 수도 있음
+
+           +++ 헷깔리지 말것) promise는 콜백함수를 가독성있게 쉽게하는 디자인 패턴이고 비동기함수랑은 다른 개념임
+
+[Promise 가 어려우면 async / await]
+async 함수 앞에 사용, 함수가 promise 역할 기능 -> 함수().then(function(){ }) //이런식으로 가능 
+*async를 function앞에 붙이면 함수 실행 후에 Promise 오브젝트가 남음
+*async function 안에서 쓰는 await을 then 대신 사용가능
+*await : 기다려 주세요. // async 함수안에서(오래걸리는) 비동기 함수를 당장 패쓰하지 않고 순차적으로 돌아가게 만듬
+* try catch : 
+    await은 실패시 멈춰서 다음 코드가 발동안되는데 이런경우 
+    try { 이거 해보고 에러나면 } catch { 이걸 실행 } 를 써줌
+* promise + await : 변수명 = await 프로미스; 하면, 이상없으면(성공이면) 순차적으로 그 다음 코드로 넘어가고 아니면 try catch 처리 
+
+[for]
+
+1. 그냥 for
+2. forEach() (Array 전용)
+3. for in (Object 전용, 각 오브젝트안에서 key1, key2에 대해서 발동) :
+    for(var key : 오브젝트){}
+     1) enumerable 한 것만 반복해줌
+    2) 부모의 prototype도 추력 -> 자식이 직접 가지고 있는 값만 반복하고 싶으면 오브젝트.hasOwnProperty(key) 사용
+
+4. for of (iterable 전용 : 내부데이터 출력을 도와주는 함수가 있다.) , (Array, 문자, arguments, NodeList, Map, Set)
+   ex) for(var 자료 of '가나다라마바사'){
+    console.log(자료);
+   } ㅡ> 각각 '가','나','다'.., 등이 찍혀서 나옴
++) object에서 어떤 값을 추가하려면 오브젝트[key] = value ; 이런식으로 해줌
+++) object에서 어떤 값을 지우려면 delete 오브젝트[key] 이런식으로 해줌
+
+[ES6 : Symbol 자료형]
+만드는법 : var 심볼 = Symbol('설명');
+용도 : Object 자료형의 비밀스런 Key값
+    var person = { name : 'Kim'};
+    var weight = Symbol('내 시크릿 몸무게임');
+    person[weight] = 100; //심볼 //대괄호로 적음 -> 반복문에 출력 x
+                person.weight = 100; //이건 일반 key에 대한 값을 등록하는것 -> 반복문에 출력
+    ㄴ> 등록하는 방법 2
+    var person = { name: 'Kim', [weight] : 100 } ; 대괄호 안에 입력 
+특징 : 1 Symbol('내용') '내용' 부분이 같다고 해서 == 연산자로 같다고 비교하면 false
+       2 전역심볼(Symbol.for~) : '내용'이 같으면 같은 symbol이라고 판단 -> ex) var a = Symbol.for('내용1'); 
+       3 기본 내장 Symbol존재(array, object 자료형에서) : 모든 array 자료형은 [Symbol.iterator]라는 이름을 가진 심볼( for of를 쓸 수 있게 도와주는 Symbol)이 있음 //걍 참고만
+
+[ES3~ : Map, Set 자료형]
+
+1) Map 
+존재이유(object와 차이) : 
+    자료의 연관성을 표현하기 위해씀
+   * Object 자료형은 자료이름(key)이 글자만 가능, Map은 다 가능(array도 가능)
+만들때 : 
+ var person = new Map();
+키, 값 저장하기 : 
+    person.set('키값','밸류값');
+    * 혹은 Map을 만들때 대괄호로 묶어서 한꺼번에 할 수있다.
+        ex) var person = new Map([[1,2,3], 'key'],['age',10])    
+값 불러오기 : person.get('키값');
+크기 : person.size
+반복문으로 꺼내기 : .keys()이용
+   for(var key : persion.keys()){
+        person.get(key)
+   }
+
+*2)Set // 중복자료를 허용하지 않는 Array와 비슷
+    var 출석부1 = ['tom', 'kim', 'jenny', 'tom'];
+    var 출석부2 = new Set(출석부1) // 에서 중복인 tom을 저장하지 x
+   자료추가 : 출석부2.add();
+   그외 : 어떤 자료가 있는지 출석부2.has('tom'); , 크기 size(), set -> array 변환 : [... 출석부2]
+
+[Web Components : 웹브라우저 기능] = 복집한 html을 축약해서 나타내기
+
+ex)
+class 클래스 extends HTMLElement {
+    connectedCallback(){
+        this.innerHTML = `<label></label><input>`; 
+        // html 생성속도 빨라지게 하는법(밑)
+        // let 변수 = document.createElement('label');
+        // this.appendChind(변수)
+
+        //커스텀에서 변수 받아오는 법
+        var name = this.getAttribute('name');
+        
+    }
+}
+customElements.define('custom-input', 클래스);
+
++) attribute 변경 감지하는법
+class .. {
+    static  get observedAttributes(){
+        return ['name'];
+    } // attribute 변경 감지
+
+    attributeChangedCallback(){
+
+    } / 바뀌면 이거 실행해줌 //React, vue랑 비슷한 재렌더링 구현기능
+
+}
+
+[shadowDOM] : 일반적으로 볼 수 없는 숨겨진 HTML
+
+document.querySelector('mordor').attachShadow({mode : 'open'});
+//attachShadow({mode : 'open'}) 숨겨진 공간을 만들어줌
+document.querySelector('mordor').shadowRoot.innerHTML = '<p>심연에서왔도다</p>'
+
+응용 : webComponent는 다른 태그에도 스타일이 적용되는 문제가 있는데, 이경우에
+    connectedCallback()안에 this.attachShadow({mode : 'open'});
+    this.shadowRoot.innerHTTML = "원래 쓰려던 컴포넌트와 스타일태그"
+이렇게 하면, 바깥에 HTML태그에 있어서 동일한 스타일이 적용되는 문제를 피할 수 있음
+
+[template] : html 임시보관함
+    template 태그안에 적은 html은 렌더링 되지 않기에 여기다 적어두고
+    <template id="template1">
+        <label>이메일을 입력하쇼</label><input>
+        <style>label { color : red }</style>
+      </template>
+
+      class 클래스 extends HTMLElement {
+        connectedCallback() {
+          this.attachShadow({mode : 'open'});
+          this.shadowRoot.append(template1.content.cloneNode(true)); //<---- 이런식으로 id명.content.cloneNode(true); 처리하면된다.
+      
+        }
+      }
+      customElements.define("custom-input", 클래스);
+    또한 this.shdowRoot.querySelector() 를 변수에 담아 이벤트 리스너를 해도 똑같이 할수 있다.
+
+[optioning chaining] = ?./??연산자
+1) ?. =>  // 에서 ?.왼쪽이 null, undefined면 점안찍어주고 undefined 남겨줌
+
+    ex)
+
+    var user = {
+        name : 'kim',
+        // age : 20
+        // age : {value: 20}
+    };
+    console.log(user?.age); <- 이경우에 에러가 안남 
+        // user.age였어도 JS는 에러 안나는데 
+        문제는 age안에 또다른 key값을 꺼낼때. 
+        즉, .연결이 두개이상일때 
+        (ex ; user.age?.value 이경우에 에러를 방지 )
+        에러가 나는걸 방지함
+    document.querySelector("#a")?.innerHTML ; 이 경우도 에러방지함 //  ?. 기준으로 왼쪽부분의 에러를 방지한다고 보면됨
+2) ?? => ?? 왼쪽이 null, undefined 이면 ?? 오른쪽으로 나타냄
+    ex) console.log(undefined ?? '오잉');  //보통 데이터 받아올때 늦게 도착시에 라이브러리 쓸 떄 유용함 
