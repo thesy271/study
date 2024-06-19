@@ -1,0 +1,660 @@
+
+자바스크립트를 실행해주는건 브라우저의 실행 엔진
+node.js : 자바스크립트 런타임(자바스크립트 실행기) //V8 JavaScript 엔진으로 빌드된 JavaScript 런타임
+
+노드 js 특
+-장점:  
+non-blocking = 비동기 처리 , 를 잘함 // 순차적인게 아니라 처리빨리되는 순으로 서버에서 제공
+일반적인 서버에서 CPU를 성능 향상하거나 쓰레드를 늘려도 되긴함
+-단점:
+싱글쓰레드이므로 간단한 요청에 특화임 
+-그외:  
+타입스크립트도 지원
+
+노드 프젝만들기
+1 nodejs LTS 버전 + vsCode 다운 설치
+2 프젝 폴더안 sever.js 생성 
+3 터미널 (컨트롤 + 물결)열고
+    거기다가 npm init -y 를 입력 => package.json 파일 생성 
+4 서버만들기
+npm install express를 입력
+5 server.js 에다가 
+const express = require('express'); //express 라이브러리 사용하겠다는 뜻
+const app = express()
+
+app.listen(8080, ()=>{
+    console.log('https://localhost:8080에서 서버 실행중')
+})
+
+app.get('/',(요청, 응답)=>{
+    응답.send('반갑다')
+}) 입력
+6 터미널로 확인가능 // node server.js 하면 서버 실행중이뜸
+
+컨트롤 + c : Node.js 프로세스를 종료하고 서버 중지해줌
+
+포트란? 
+ 컴퓨터는 랜선으로 연결하면 다른 컴퓨터랑 통신할 수 있다
+ 근데 웹서비스를 이용하는 것도 이것과 다를게 없다 //네이버에 접속 = 네이버 컴퓨터에 접속하는 것 
+ 언제접속가능? 컴퓨터에 포트라는 구멍뚫어놓으면 다른컴퓨터끼리 접속 가능 (컴퓨터에 6만개정도 있음) 
+    app.listen(8080, ()=>{
+        console.log('https://localhost:8080에서 서버 실행중')
+    }) => 이경우 8080 포트를 연 것임
+ip주소(IPv4) + : + 포트변호 입력시 : 누군가가 들어올 수 있는 것 
+
+콜백함수: 다른 함수 파라미터에 들어가는 함수
+
+사용자가 경로로 접속시 html 파일 보내려면 (express라이브러리)
+app.get('/',(요청,응답)=>{
+    응답.sendFile(_dirname + '/index.html') <- __dirname 절대경로의미 : 현재 server.js가 담긴 폴더
+})
+
+*nodemon : 소스 코드 수정시 다시 끄고 server.js 시작해야해서 알아서 수정반영되게 하는 것
+npm install -g nodemon(혹은 nodemon@3)
+//nodemon 실행안된것 : 관리자로 powershall 열어서 권한 set-executionPolicy 해서 remote로 바꿔서 헤결
+//nodemon으로 파일 실행시 터미널>nodemon server.js
+
+css 파일적용할때 그게 들어 있는 폴더를 server.js에 '등록'해야 
+그 폴더안에 파일들을 비로소 html에서 사용가능 //경로 등록해놨으면 link에 href로 css등록할때
+등록한 폴더경로를 지우고 파일만작성함
+
+*관계형DB vs 비관계형DB
+1 관계형 : SQL문법씀 , 테이블형태 , 데이터 저장시 최대한 중복데이터를 제거해서 저장하려함 ->정규화
+//데이터의 정확성이 중요
+
+2 비관계형 : 다양한 형식으로 저장 , 정규화 그런거 안함, 데이터 수정삭제 느림
+//빠른 입출력이 필요한 서비스에 굿
+
+*mongoDB
+collection(폴더) 안에 document(파일) <- json형식가능
+1) 컴퓨터에 설치
+2)hosting가능 : 무료용량 512MB, 자동 백업, replica set(3개로 분산)
+
+-mongoDB 라이브러리 설치후 db server.js연결
+
+*await : 다음줄 실행하기 전에 잠깐 기달 
+//필요한 이유 : JS는 참을 성이 x , 즉, 처리가 오래 걸리는 코드는 처리완료 기다리지 않고 바로 다음줄실행되서 
+                오래걸리는 것 쓸떄 함수 앞에다가 async놓고 오래걸리는거에 await놈, 그럼 그 다음꺼(오래안걸리는것) 먼저 실행안됨
+//참고: await은 정해진 곳만 붙일 수 있음(Promise 뱉는 곳) 
+
+JS에서 좌변에 중괄호({})가 사용되어 변수 할당하는것은 객체 비구조화 할당으로
+객체의 속성을 추출하여 변수에 저장하는 역할을 함
+
+new MongoClient(url).connect().then((client)=>{
+    db = client.db('DB프로젝트이름') ;
+    app.listen(포트번호, ()=>{
+
+    })
+})
+후에
+db.collection('collection명').find(Or insertOne 등등)
+
+*EJS 셋팅
+
+템플릿엔진: 데이터보낼때 html안에 서버에 데이터를 꽂아주게해줌
+EJS : 자바스크립트문법으로 사용가능한 엔진
+-views 폴더안에 .ejs 파일만들고 html형식으로 만듬
+-경로에 접속시에 응답 보낼때 end가 아닌 응답.render('views파일안에있는 ejs파일 명') //응답은 1개만 가능
+-서버 데이터를 ejs안에서 넣는 법
+1응답.render('ejs파일',{ key : value})
+** 2ejs파일안에 들어가서 <%=데이터이름%>
+
+JSON.stringify() :  JS 객체로-> JSON문자열 
+JSON.parse() : JSON문자열 -> JS 객체
+.json() : JSON문자열 -> JS 객체 // HTTP 응답 객체에서 JSON 데이터를 추출하고 JS객체로 변환함
+
+SSR(서버사이드렌더링)
+: html을 서버측에서 데이터채워서 완성해서 유저에게 보내주는것
+
+CSR(클라이언트사이드렌더딩)
+: 텅 비어있는 html과 데이터만 유저에게 보내고 html 내용은 자바스크립트로 유저 브라우저에서 생성
+
+*****REST API(Representational State Transfer 를 잘따르는 API) //좋은 API 디자인하는 원칙
+1 일관성 
+2 Cilent-Server 구분 = 유저에게 서버역할 맡기지 x
+3 Stateless : 요청은 독립성
+4 Cacheability : 요청은 캐싱이가능해야함 //캐싱: 자주 수신되는 자료들은 요청날리지 x 하드에 저장해놓고 씀
+5 Layered system : 요청하나는 최종응답전까지 여러 단계 거치기 가능
+6 Code on demand : 서버는 유저에게 실행가능한 코드를 보내줄 수도 있음
+ 좋은 URL 작명 관습
+1 동사보다 명사위주
+2 띄어쓰기는 언더바_대신 대시-기초
+3 파일 확장자 쓰지 말기(.html)
+4 하위문서들을 뜻할땐 /기호사용
+
+서버: 서버는 요청들어오면 처리해주는 프로그램
+    서버가 요청받기 위해서 필요한 것
+    1. method : GET, POST, UPDATE, DELETE
+    2. url : 엔드포인트라고함
+API : 서버가 처리하는 기능 
+
+form : input 에 name(서버전송) 입력 확인 
+
+쉽 요청.body 쓰려면 
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+
+응답.redirect('/') // 유저를 다른페이지로 이동시킴
+
+try catch: try안코드 실행해보고 에러시에 catch실행
+try {
+
+} catch(e){
+
+}
+
+*url 파라미터로 하드코딩 하지 않고 get보내기
+url 경로는 '/detail/' + : + {바뀌는변수}
+요청.params 하면 값꺼냃 수 있음
+ejs a태크안에 <%= %>넣어서 사용가능
+
+docoment 수정하고싶으면
+db.collection().updateOne({ a : 1}, {$set: {a: 2}}) 
+
+post보낼때 요청.body
+
+*method-override -> put요청 가능해짐
+    Const mothodOverride = require('method-override')
+    app.use(methodOberride('_method'))
+form 안에 actiobn = "경로?_method=PUT" 
+
+
+*mongoDB update문 //하나 수정 updateOne
+$set : 덮어쓰기 
+$unset : 필드값 삭제
+$inc : {$inc: { like : 1}} //기존 like에서 1을 더해줌
+$mul : {$mul: { like : 2}} //기존 like에서 곱해줌
+                -동시에 여러개 : updateMany()
+ex) like항목이 10이상한 document 전부 수정
+updateMany({ like: $})
+*조건식
+{$gt : n} =>  > n
+gte 이상
+lt 미만
+lte <=
+ne =/=
+
+ajax데이터 보낼때 array, object는 JSON으로 보내야함
+
+*script안에 ejs 사용하려면 문자열로 감싸야함 
+
+script안에 ejs문법은 문자안에 담아야함
+html안에 console은 터미널이 아니라 브라우저 콘솔창에 뜸
+
+ajax요청 사용시 응답.redirect나 응답.render는 사용안하는게 나음
+
+dataset => 속성에서 data-abc에서 data.abc : 이런식으로 data의 필드처럼 쓸 수 있음
+
+*ajax 에러잡기 fetch일때 예시
+fetch('').then((res)=>{
+    if(res.status == 200){
+        return res.json();
+    }else{
+        //서버가 에러 전송시 실행할 코드
+    }
+}).then((result)=>{
+    //성공시 실행 할 코드
+}).catch((error)=>{
+    //인터넷 문제등으로 실패시 실행할 콛, 
+})
+
+* A.parentElenet : A의 부모 요소  
+ex) e.target.parentElement.parentElement.style.displey = 'none'
+
+mongoDB에 json으로 전송하는 형태는 문자열임 db상의 값이 순수 숫자면
+delete할때 타입이 달라서 삭제안될수 있음(타입변환해서 일치시키면 되긴함)
+즉, Json자료형으로 저장할때 숫자로 된 문자열일때 타입구분 잘 해야함
+
+***nodejs (+ mongoBD) 페이지네이션
+1) db...find().skip() limit() 이용
+find().toArray().limit(5) <- 위에서 5개만 가져옴
+                .skip(5).limit(5); <- 위에 스킵 후 5개 가져옴
+ㄴ> skip이 100만건이 넘어가면 힘듬
+2) db...find({_id: {$gt: 방금본 게시물_id}}).limit(5).toArray() 
+ㄴ>엄밀히 말하면 지금보는게시물보다 큰거 5개 / 장점: 위보다 빠름/ 단점: 페이지 이동이 한칸씩만가능
+
+====================================================================환기 refresh
+*****JWT, session, OAuth 
+유저 Server DB
+Server : 입장권줌 // 유저 로그인 언제했는지 적음 // 유저한테 입장권 보이게 하지는 않음 
+브라우저 쿠키 저장소에 입장권 보관함, get post 시 저장, 서버는 쿠키 컨트롤할 수 있는 권한있음
+*입장권 만들때 
+1 session : 유저 session id 만 적혀있음 // DB상에는 : 아이디 로그인날짜 유효기간 session id 
+//유효기간등 이상없으면 통과시킴
+-장점 : 유저 get/post 요청'마다' 로그인상태 체크가능 , db가 힘들어함
+session id 보관용 db <-장점 : 입출력빠름
+
+2 token(JWT : JsonWebToken) : 입장권 발급(아이디 로그인날짜 유효기간등(암호화한거))해서줌
+db까지 안가고 서버에서 너왜 위조했냐 이런거 물어봄
+-장점: db 아무것도 안함, 유저많거나 마이크로서비스(많은서버) 운영중이면 편함
+*OAuth
+정확한뜻: 사용권한 유저가 사용권한 대여함, A사이트정보를 B사이트에서 사용가능
+ex)OAuth 소셜로그인 A회원정보로 B사이트가입
+
+
+**** Session
+1. 가입 기능
+2. 로그인 기능 
+3. 로그인 완료시 세션만들기
+4. 로그인 완료시 유저에게 입장권 보내주고, 유저 브라우저 쿠키에 저장해줌
+5. 로그인 여부 확인하고 싶으면 입장권 까봄
+
+passport 라이브러리 써서 구현
+npm install express-session(세션만들때) passport(회원인증) passport-local(아이디 로그인으로 인증)
+
+-----------------------------------------------------
+const session = require('express-session')
+const passport = require('passport')
+const LocalStrategy = require('passport-local')
+
+app.use(passport.initialize())
+app.use(session({
+  secret: '암호화에 쓸 비번',
+  resave : false,
+  saveUninitialized : false
+}))
+
+app.use(passport.session()) 
+----------------------------------------------------- 
+ㄴ> app.use()가 3개 있는데 순서틀리면 x 
+
+//session() 안에 언제 어떻게 세션을 만들지 설정 
+
+- secret : 안에는 여러분만의 비번 잘 넣어주면 됩니다. 세션문자열같은거 암호화할 때 쓰는데 긴게 좋습니다. 털리면 인생 끝남
+
+- saveUninitialized : 는 유저가 로그인 안해도세션을 저장해둘지 여부 (false 추천)
+
+- resave는 유저가 요청날릴 때 마다 session데이터를 다시 갱신할건지 여부 (false 추천)
+
+db에 비번은 암호화 할 것
+
+
+* (미들웨어함수)
+express.js에서 http요청을 처리하는 중간에 위치하는 함수
+
+* 참고: process.nextTick(()=>{}) : nodejs에서 내부 코드를 비동기적으로 만들 때 쓰이는 함수
+즉, JS코드 1,2,3 에서 오래걸리는거때문에 보류될때 그걸 비동기적으로 바꿔서 보류시킴
+//유사품 : queueMicrotask()
+
+cookie : {maxAge : 60 * 60 * 1000 } : 1000 는 초 의미  => 3600초
+passport.serialize : 유저가 로그인 성공하면 서버에서 유저 입장권을 쿠키에 넣어줌
+쿠키는 유저가 요청 날릴때마다 자동으로 전송
+
+1. 로그인성공시 세션만들어주고 유저 브라우저 쿠키에 저장해주는건 passport.serializeUser()
+2. 유저가 쿠키 제출한걸 확인해보는건 passport.deserializeUser() //세션정보적힌 쿠키가지고 있는 유저가 요청날릴때마다 실행됨
+ㄴ> 쿠키가 서버로 자동으로 전송
+3. 현재 로그인된 유저 정보 출력은 API들 안에서 요청.user 
+=> 내가 한 실수 : app.use(passport.session())을 뺴먹음 -> 그래서 쿠키 저장되었는데 
+    login에 요청에 대한 user console이 안떳음
+    login성공 -> passport.serialize는 값이 들어가고 쿠키저장된것까지는 확인했는데 
+    deserializeUser가 아예 작동을 안해서 보니 (즉, 요청할때마다 user정보가 undefined나왔음)
+    미들웨어함수로써 저부분이 아예 적용이 안되서 desireialize부분이 안된거였음
+
+응답.json(a) a를 직렬화하여 클라이언트에 응답보냄
+
+
+*세션: 웹애플리케이션이 동작하는 서버 측에 저장됨/서버의 메모리나 데이트베이스
+ 
+//form으로 회원가입 전송할때 요청.body로 한꺼번에 넣는것보다
+악성 정보도 들어갈수 있어서 따로 넣는게 좋음
+
+비번은 hasing(문자-> 랜덤문자 변환) : 원래문자 예측못함
+-hashing하는법
+: 라이브러리 설치
+npm install bcrypt
+const a = require('bcrypt') 세팅
+bcypt.hash('문자',10) <- 하나해싱에 1초정도 보통 10설정
+-보통 salt라는 랜덤 문자를 넣고 해싱 처리 / salt도 db에 같이 보관
+
+await과 동기함수가 섞여있으면 함수의 실행순서는 그것들이
+나타나는 순서와 같다
+
+*****유저가 로그인하면 세션document를 하나 만드는데 그것이 
+DB에 발행된느게 아니라 컴퓨터 메모리에 임시저장되고 있어서
+서버가 재시작되거나 그러면 세션document들이 증발함
+즉, 안정적으로 쓰고 싶으면 세션을 DB에 저장해야함 
+connect-어쩌구 db라이브러리 설치
+-mongoDB : npm install connect-mongo
+
+성능 팁----------------------------------------------------------------------------------
+
+비효율적으로 보이는 포인트가 몇개 있어보이는데 
+
+1. deserializeUser는 항상 유저가 서버로 요청을 날릴 때마다 세션용 쿠키가 있으면 실행됩니다.
+그럼 모든 요청을 날릴 때 쓸데없는 DB조회가 발생하는 것 아닙니까  
+지금 메인페이지 같은 곳에 방문할 땐 굳이 저걸 실행할 필요가 없어보입니다. 
+그래서 deserializeUser를 특정 route에서만 실행시키는법 이런거 찾아보시면 약간 더 효율적으로 동작시킬 수 있습니다.
+ 
+2. 근데 그렇게 해도 요청이 너무 많이 들어와서 DB조회가 너무 많이 발생할거같으면 
+Redis 같은 가벼운 메모리기반 데이터베이스를 호스팅받아서 쓰는 사람들도 있습니다.
+하드디스크 보다 램이 훨씬 빠르니까요.
+connect-redis 그런걸 한번 찾아봅시다.
+
+3. 유저가 1억명이거나 아니면 백엔드에서 운영중인 마이크로 서비스가 많다면
+세션 말고 JWT 쓰는게 편리할 수도 있습니다. 그건 DB조회할 필요가 없으니까요. 
+그것도 passport로 구현할 수 있는 예제가 많기 때문에 찾아보면 쉽게 구현가능합니다. 
+물론 DB 조회를 안하면 유저를 강제로 로그아웃 시키거나 그런 기능 만드는게 어려울 수 있습니다.
+
+----------------------------------------------------------------------------------------
+ㄴ--> JWT는 클라이언트에 정보가 담긴 토큰을 통해서 서버단까지 진위를 판별 하므로 
+DB까지 가서 사용자 진위나 세션검증 할 필요가없음,
+세션은 DB까지 끄집어내서 쿠키에 세션을 발급하고 세션에 대한 정보로 판단 
+
+
+****환경변수
+유저나 컴퓨터에 따라서 좀 달라져야하는 가변적인 변수,
+ex) mongoUrl
+별도 파일에 보관하는게 나중에 편리
+
+npm install dotenv
+require('dotenv').config() //서버파일 상단에 아무데나 추가
+후 프로젝트 루트경로에 .env만듬
+=> .env 작성법
+변수명 = 변수값
+ec) PORT = 8080 / 문자자료형은 "" 안에 넣어주는게 좋음
+=> 실제 환경변수가 오는 자리에에다 process.env.변수명으로 함
+
+!.env파일은 민감한 정보가 있기 때문에 깃허브에 올리지 말 것 
+ 
+
+***JS에서 if(!A)는 A가 null이거나 undefined일 때 참으로 평가
+ 
+*****미들웨어
+ex) function 함수(요청, 응답){
+    if(!요청){
+        응답.send(로그인하세요)
+    }
+}
+공통으로잘쓰이는 이런 함수가 있을때 
+api에서
+
+app.get('url',(요청, 응답)=>{
+
+})
+함수()를, 콜백함수에 안 삽입하고 
+
+app.get('url',함수,(요청, 응답)=>{
+    이렇게 써도 된다 이때 함수()를 미들웨어 함수라고 하고 요청과 응답사이에 실행된다.
+})
+아, 이렇게 미들웨어로 쓰려면
+
+function 함수(요청, 응답, next <--이 파라미터를 추가 해준다){
+    if(!요청){
+        응답.send(로그인하세요)
+    }
+}
+그리고 
+무한대기가 생기지않도록 
+
+function 함수(요청, 응답, next <--이 파라미터를 추가 해준다){
+    if(!요청){
+        next() <-- 이걸넣어주면 미들웨어 다음으로 넘어간다
+        응답.send(로그인하세요)
+    }
+}
+
+
+[AWS]
+
+버킷(S3에 저장되는 데이터의 컨테이너) // 이미지등 저장하는 하나의 하드디스크라 보면됨 
+
+권한:  버킷정책쓰거나 . ACL 쓰거나(옛날방식)
+
+    - 버킷정책
+    ex)
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "1",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::님들버킷명/*"
+            },
+            {
+                "Sid": "2",
+                "Effect": "Allow",
+                "Principal": {
+                    "AWS": "님들ARN"
+                },
+                "Action": [
+                    "s3:PutObject",
+                    "s3:DeleteObject"
+                ],
+                "Resource": "arn:aws:s3:::님들버킷명/*"
+            }
+        ]
+    } 
+
+    1-1 CORS 설정 //어떤 사이트에서 버킷안의 파일들을 읽기, 쓰기, 삭제할 수 있는지 CORS 설정하는 부분
+    [
+        {
+            "AllowedHeaders": [
+                "*"
+            ],
+            "AllowedMethods": [
+                "PUT",
+                "POST"
+            ],
+            "AllowedOrigins": [ //버킷사용하는 도메인 주소
+                "*"
+            ],
+            "ExposeHeaders": [
+                "ETag"
+            ]
+        }
+    ] 
+
+(이미지 전송 구현)
+- form으로 전송시 enctype을 "multipart/form-data" 로 함
+- 이미지 전송 저장을 위해서 라이브러리 3개 설치
+multer, multer-s3, @aws-sdk/client-s3
+- input 에 .upload("input file의 name이름") 함수를 미들웨어로 하고
+input태그안에 mulple하면 두개이상 이미지 없로드가 가능
+- 복수이미지 저장은, 미들웨어 upload.single('name') -> 미들웨어 upload.array('name',최데이미지수)
+- 요청.file 에서 file메서드는 업로드한 이미지의 정보랑 버킷정도등 알려줌 
+- 즉 요청.file.location : img src의 경로로 입력하면 이미지가 나옴 // 즉, 이미지 url은 db글과 같이 저장함 
+
+[api]
+다른 폴더랑 파일만들고 server.js에서 분리해서 만들수 있음
+분리한 폴더 속 js 파일에 const router = require('express').Router() ; //변수만듬
+그다음 server.js 에서 app.get ~ 여기서 app부분을 위에 router 변수로 바꿈
+마지막에 module.exports = router  로 처리함 // 그다음  server에서 router를 import 해야 정상 처리 가능함
+server.js 에서 app.use('/',require('경로')) ; 로 미들웨어 지정해주면 분리한 app모듈을 사용  
+
+[AWS]
+Node.js서버 배포하기 : 서버 컴퓨팅 서비스를 제공함 (Elastic Beanstalk)
+터미널로 node server.js하면 다른 컴퓨터에서 http://내컴퓨터의ipv4주소:8080 로 접속이 가능하지만
+24시간 켜놓을 것이 아니라면 클라우드 서비스에서 컴퓨터를 빌려서 띄워놈 => AWS 많이 이용
+
+-EC2 상품이 가장 유명한데 컴퓨터 한대빌리는 상품이라 숙련자권장함
+편리하게 이용하려면 AWS Elastic Beanstalk 이용 //카드등록하면 1년간 저사양 컴퓨터 이용가능
+ 
+[mongoDB 검색(select 조회)]
+find({title : {$regex : 찾는 단어} }) 이런식으로 입력
+//document가 많을 수록, 검색 성능 저하 -> index이용
+
+[검색]
+
+ex) let result = await db.collection('post').find({title : { $regex : 요청.query.val}}).toArray();
+title : { 요청.query.val } 이러면 완전히 같은 값이 필터링되니까
+'특정문자를 포함하려면' (관계형에서는 LIKE)
+title : { $regex : 요청.query.val } 이런식으로 해야함
+
+(index = 검색을 빠르게 하기 위해 미리 정렬된 복사본)
+: 특정 collection에 대해서 하나하나 다 살펴봐서 성능 저하가 발생하는데 그문제를 해결해줌
+
+1 동작원리 
+
+/* 인강에 써진거 그대로 인용
+
+    제가 1부터 100까지 적어놓은 숫자카드를 책상에 진열해놨습니다. 
+    이제 여러분은 저한테 질문을 던져서 제가 생각하는 카드가 뭔지 맞추면 됩니다.
+    
+    멍청한 놈 :
+
+    "1입니까"
+    "2입니까"
+    이렇게 하나하나 물어봅니다.
+
+    똑똑한 놈 :
+    "50 이상입니까?"
+    "그럼 75 이상입니까?"
+    이렇게 반을 잘라가면서 물어봅니다.
+
+    
+    이러면 매우 빠르게 원하는 숫자를 찾아낼 수 있습니다. 
+    아마 카드가 100만개라도 20번만 물어보면 찾을 수 있을걸요?
+    반을 잘라가며 찾는걸 멋있는 말로 binary search라고 부릅니다. 
+
+    그래서 거의 모든 DB들은 기본적으로 binary search 또는 그거랑 비슷한 짓으로 게시물을 빠르게 찾아주는데
+    근데 binary search를 쓰려면 조건이 있습니다.
+    카드가 1부터 100까지 미리 정렬이 되어있어야합니다.
+    그래야 "50 이상입니까~" 라고 물어보고 필요없는 카드들을 치울 것 아닙니까
+
+    그래서 데이터베이스에 있던 document들도 미리 정렬이 되어있어야 binary search를 할 수 있습니다.
+    그래서 여러분도 컬렉션에 있던 document들을 복사해서 미리 정렬해두면 되는데
+    정렬된 컬렉션 복사본을 index라고 부릅니다. 
+*/
+mongoDB로 인덱스 "필드명" : "타입(text)" -> 숫자면 1 등록하고서 //오름차1, 내림차 -1
+db.collection().find( { $text : { $search: '안녕' } } ).toArray() 이런식 //필드가 숫자 타입 인덱스는 $text안쓰고 그냥 써도 그냥 문법써도 알아서 찾음
+
+    let result = await db.collection('post').find({title : { $regex : 요청.query.val}}).explain('executionStats')
+    console.log찍어서 
+
+        totalDocsExamined: 11, // 11개의 문서를 까봄
+        executionStages: {
+        stage: 'COLLSCAN', //전체 스캔
+
+        totalDocsExamined: 0,
+        executionStages: {
+        stage: 'TEXT_MATCH',
+
+        //COLLSCAN 이거 안뜨면 빠르게 동작한다 봐도됨
+
+2 단점
+    1) 만들면 용량차지 => 검색 작업 많은 필드만 index만듬
+    2) document 추가/수정/삭제시 index를 똑같이 수정해줘야 되니까 document 추가/수정/삭제시 느려질 수도 있음 => 꼭 필요한 필드만 index 만들
+    3) 정확한 단어로만 검색가능 => full text index 아니면 search index를 써서 해결 
+
+
+(search index 동작원리)
+
+1. 문장에서 조사, 불용어 등 제거 
+그러니까 and or the ~s 한국어도 비슷하게 을, 를, 이, 가, 그리고, 또는 이런걸  제거해준다는 소리입니다.
+2. 단어들을 다 뽑아서 정렬합니다.
+3. 그 다음에 이 단어들이 어떤 document에 등장했는지 그 document id같은걸 함께 단어 옆에 기재
+4. 그럼 이제 seafood라고 검색했을 때 오른쪽 index에서 빠르게 찾음
+
+서버에서 search index쓰려면 : .find() 대신, .aggregate()를 보통 씀
+ex)
+   let 검색조건 = [
+        {$search : {
+        index : '사용할 인덱스 이름',
+        text : { query : '검색어', path : '검색할 필드이름' }
+        }}
+    ]
+    let result = await db.collection('post').aggregate(검색조건).toArray()
+
+   < 1. aggregate() 안에는 [{조건1}, {조건2} … ] 이런 식으로 검색조건을 여러개 집어넣을 수 있습니다.
+     2. $search 연산자를 쓰면 search index를 이용해서 검색을 해옵니다.
+     3. $search 쓰려면 인덱스 이름, 검색어, 어떤 필드에서 검색할지 잘 채우면 끝입니다. >
+
+     let 검색조건 = [
+     {$search : {
+       index : '사용할 인덱스 이름',
+       text : { query : '검색어', path : '검색할 필드이름' }
+     }},
+     { $sort : { _id : 1 } },
+     { $limit : 10 },
+     { $project : { 제목 : 1, _id : 0 } }
+   ] 
+   - $sort 쓰면 검색 결과를 정렬해주는데 _id를 기입하면 _id 순으로 정렬해줍니다.
+   안쓰면 기본적으로 score 순으로 정렬됨
+   - $limit쓰면 결과를 제한해줍니다. 검색결과 중에 맨 위의 10개 document만 가져올 수 있습니다. 
+   당연히 { $skip : 5 } 이거 연산자도 쓸 수 있습니다. 그래서 이런거 쓰면 페이지네이션도 구현가능
+   - $project쓰면 찾아온 결과 중에 원하는 필드만 가져오라고 걸러줄 수 있습니다. 
+   예를 들어 {title : 1, content : 0} 이러면 title은 보여줌, content는 숨김이라는 뜻입니다.
+
+
+[서버와 유저의 통신]
+
+1. HTTP // GET, POST 요청
+ 단: - 주소도 적어야함 
+     - 유저가 먼저 보내야 서버가 응답해주지 서버가 먼저 뭔가를 보낼일이 x / 수동적
+2. Server sent events (일방향) // 서버가 원할때 유저에게 데이터 전송가능
+ 장: - 서버에 한번 연결해두면 서버가 원할 때 맘대로 데이터를 유저에게 보내줄 수 있습니다.
+     - 가벼워서 실시간 데이터 전달에 좋음
+3. Websocket (양방향, 실시간) // 자유롭게 전송가능(빠르고 가벼움)
+
+즉, 
+평소에는 그냥 일반 HTTP요청 하던거 그대로 쓰고 
+- 서버에서 계속 유저에게 데이터를 푸시만 해주면 되는 경우엔 server sent events
+- 채팅기능, 게임기능같은 실시간 양방향 통신을 구현하고 싶으면 websocket
+ 
+(실시간 데이터 푸쉬 : SSE)
++) 2. SSE : HTTP와 다르게 연결 끊지 않고 유지한 상태로 서버에서 응답 
+
+
+- 방법 1 (단순한 문자)
+    1. header의 Connection 항목을 keep-alive로 설정 
+    2. 응답.write('안녕하세요') 이걸 이용해 계속 유저에게 지속적으로 응답이 가능 
+    그래서 이런 방법으로 실시간으로 서버 -> 유저 데이터 전송이 가능한 것 
+
+     SSE연결 원하면 new EventSource('/URL')
+     server.js 에서 보낼때 
+    Ex)
+        app.get('/stream/list', (요청, 응답)=>{
+            응답.writeHead(200, {
+                "Connection": "keep-alive",
+                "Content-Type": "text/event-stream",
+                "Cache-Control": "no-cache",
+            })
+        
+            응답.write('event: msg\n'); // 공백 있었음 'event{ }: msg\n')
+            응답.write('data: 바보\n\n');
+        
+        })
+    ㅡ> 즉, SSE는 응답으로 event와 data 필드에 관하여 두 줄로 나눠서 보내야함 그리고 \n로 다음줄로 넘어가고 마지막에는 \n\n로 데이터의 끝을 나타냄
+
+- Header란
+ 
+    서버와 유저가 HTTP요청으로 정보를 주고 받을 때 부가정보도 몰래 전달 
+    유저의 경우 사용하는 브라우저, OS, 쓰는 언어, 보유한 쿠키 등 이런 부가정보를 HTTP 요청시 서버로 몰래 전달 
+    반대로 서버도 응답시 유저에게 몰래 서버의 부가정보를 전달 
+    ㄴ> 이 정보들을 말함
+
+    유저 -> 서버 이렇게 전달되는 부가정보는 request header
+    서버 -> 유저 이렇게 전달되는 부가정보는 response header
+    
+    header 안에 어떤게 들어있는지 직접 보고 싶으면 크롬 개발자도구 Network탭 
+
+- 방법 2 (MongoDB안에 change Stream) : DB 변동사항을 실시간으로 서버에 알려줌
+    let changeStream = db.collection('post').watch(); mongoDB에 어떤 변동사항을 감지해줌
+
+    ex)
+    app.get('/stream/list', (요청, 응답)=>{
+        응답.writeHead(200, {
+            "Connection": "keep-alive",
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+        })
+    
+        응답.write('event: msg\n'); // 공백 있었음 'event{ }: msg\n')
+        응답.write('data: 바보\n\n');
+    
+        let 조건 = [
+            { $match : { 'operationType' : 'insert' } } //DB 변동이 insert 여야 알려줌
+            { $match : { 'fullDocument.title' : '바보' } } //title 필드 값이 '바보'여야 알려줌
+        ];
+    
+        let changeStream = db.collection('post').watch(조건);
+        changeStream.on('change', (result)=>{
+            console.log(result.fullDocument);
+        })
+    
+    })
+
+    응답 data로 보낼때 JSON.stringify()로 직열화 시켜서 보내야함
+    응답.write(`data: ${JSON.stringify(result.fullDocument)}\n\n`);// 코드를 문자 중간에 입력하고 싶으면 백틱으로 
