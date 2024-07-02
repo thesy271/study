@@ -1,0 +1,950 @@
+[Typescript 컴파일시 세부설정 (tsconfig.json)]
+
+*정리
+    {
+    "compilerOptions": {
+   
+     "target": "es5", // 'es3', 'es5', 'es2015', 'es2016', 'es2017','es2018', 'esnext' 가능
+     "module": "commonjs", //무슨 import 문법 쓸건지 'commonjs', 'amd', 'es2015', 'esnext'
+     "allowJs": true, // js 파일들 ts에서 import해서 쓸 수 있는지 
+     "checkJs": true, // 일반 js 파일에서도 에러체크 여부 
+     "jsx": "preserve", // tsx 파일을 jsx로 어떻게 컴파일할 것인지 'preserve', 'react-native', 'react'
+     "declaration": true, //컴파일시 .d.ts 파일도 자동으로 함께생성 (현재쓰는 모든 타입이 정의된 파일)
+     "outFile": "./", //모든 ts파일을 js파일 하나로 컴파일해줌 (module이 none, amd, system일 때만 가능)
+     "outDir": "./", //js파일 아웃풋 경로바꾸기
+     "rootDir": "./", //루트경로 바꾸기 (js 파일 아웃풋 경로에 영향줌)
+     "removeComments": true, //컴파일시 주석제거 
+   
+     "strict": true, //strict 관련, noimplicit 어쩌구 관련 모드 전부 켜기
+     "noImplicitAny": true, //any타입 금지 여부
+     "strictNullChecks": true, //null, undefined 타입에 이상한 짓 할시 에러내기 
+     "strictFunctionTypes": true, //함수파라미터 타입체크 강하게 
+     "strictPropertyInitialization": true, //class constructor 작성시 타입체크 강하게
+     "noImplicitThis": true, //this 키워드가 any 타입일 경우 에러내기
+     "alwaysStrict": true, //자바스크립트 "use strict" 모드 켜기
+   
+     "noUnusedLocals": true, //쓰지않는 지역변수 있으면 에러내기
+     "noUnusedParameters": true, //쓰지않는 파라미터 있으면 에러내기
+     "noImplicitReturns": true, //함수에서 return 빼먹으면 에러내기 
+     "noFallthroughCasesInSwitch": true, //switch문 이상하면 에러내기 
+    }
+   }
+    - nodejs 최신버전 설치
+    - npm install -g Typescript
+    - tsconfig.json 만듬
+    - tsc -w : ts 컴파일 실시간
+
+    (기본문법 몇개)
+    -let 회원들 :string[]= ['kim', 'park']; //array의 모든 타입이 String이여야함
+    -object자료형안의 타입 지정 :  
+    ex) let 회원들 :{memeber1 : string, member2 : string} = {memeber1 : 'kim', member2 : 'park'};
+
+    *tip : 타입지정 원래 자동이므로, 타입지정 문법 생략가능
+
+[타입 미리 정하기 애매할 때 (typescript union type, any, unknown)]
+    -union type : 
+        ex) let 회원 :number | string = 123; //소괄호도 가능 (number | String | boolean) 
+        array랑 object도 적용가능
+            ex)  let 회원들 :(number | string)[] = [1,'2',3];
+            ex) let 오브젝트 :{ a : string | number} = { a : '123' } 혹인 { a : 123 }
+
+    -any : 모든 자료형 허용
+    let 이름 :any ;
+    이름 = 1 ; 이름 = '이름'; 이름 = [] // 타입접근보단, 타입실드 해제문법임 //즉, 일반 자바스크립트 변수 같다고 보면됨 
+
+    -unknown : any와 유사하긴함 -> 모든 자료형 다 넣을 수있음 But, 조금 더 안전함
+    ex) 
+    any 사용시에는
+    let 이름 :any ; 이름 = {} ; 에서
+    let 변수1 :string = 이름 ; // 에러안나는 문제 , 이름을 unknown으로 설정시 에러가 남 
+
+    - 타입스크립트는 간단한 수학연산도 엄격하게 타입이 맞아야함 숫자타입등
+    let 이름 :unknown; 에서
+    이름 - 1 //에러발생 // unknown은 number타입이 아님
+
+    stirng타입 + 1 //허용
+    number타입 + 1 //허용
+    string|number타입 + 1 //불가 //union
+    또한, 
+    let 나이 :unknown = 1; 
+    나이 - 1 //불가 숫자 '타입' 만
+
+[함수에 타입 지정하는 법 & void 타입]
+
+function 함수(x :number) :void {
+
+}
+
+-자바스크립트와 다르게 파라미터에 타입지정되있으면 파라미터 필수임 
+//파라미터가 옵션일 경우 (x? :number) 이런식으로 = (x :number | undefined) 와 같다
+-void는 리턴하지 않는걸 의미
+
+(Type Narrowing : if문 등으로 타입 하나로 정해서 연산가능하게 함)
+
+    ex)
+        function 내함수(x :number | string){
+            if (typeof x === 'number') {
+            return x + 1
+            } 
+            else if (typeof x === 'string') {
+            return x + 1
+            }
+            else {
+            return 0
+            }
+        }
+
+        typeof x = x의 타입, a instance of b = a가 b클래스의 인스턴스인지, a in b = b가 a 라는 프로퍼티가 있는지 
+        +) 변수가 array 자료인지 확인하려면 typeof 이거는 못사용하고 Array.isArray() 
+
+(Type Assertion)
+x as B : x를 type B타입이라고 타입실드 임시 해제함, and 숫자로 된 문자열이더라도 연산상 숫자로 변환안되고 그냥 조건에서만 넘어가게 만들고 
+*타입을 실제로는 안바꿈
+
+    ex)
+        function 내함수(x :number | string){ 
+            return (x as number) + 1  // x = '1231' 이면 return값이 1232 가 아니라 '12311' 이됨
+        }
+        console.log( 내함수(123) )
+즉, 
+
+    1. 왜 타입에러가 나는지 정말 모르겠는 상황에 임시로 에러해결용으로 사용하거나
+    2. 내가 어떤 타입이 들어올지 정말 확실하게 알고 있는데 컴파일러 에러가 방해할 때
+
+(type 변수 = type alias)
+    ex) 작명할떄 영어 대문자 국룰
+        type Animal = string | number | undefined ;
+        let 동물 :Animaal = 123;
+    const 변수는 등호로 재할당만 막지 const로 담은 변수안에서 object 수정은 자유롭게 가능
+    그런데, readonly 를 쓰면  const에서 object 자료수정 막을 수있음
+        ex) type Girl = { readonly name : string } ; 
+            const 여친 :Girl = { name : '엠버'}; -> 여친.name ='유라'; 이런식으로 못바꿈
+    // 타입스크립트 에러는 에디터, 터미널에서만 존재
+    type Girl = { name? : string } ; // name 속성은 그냥 선택사항 
+
+    type A = { x : number};
+    type B = { y : number};
+    합치고 싶으면 type C = A & B ; // 타입 extend 하기
+
+type 주의 : 같은 이름의 type 재정의 불가
+
+(Literal types) //특정 글자나 숫자만 가질 수 있게 제한을 두는 타입
+let 이름: 'kim' | 'sim' ; 
+이름 = 'park' <-에러  //함수의 return 타입도 가능
+
+(as const) //1. ojb의 타입을 value로 (literal type)으로 바꿔줌 2. object안의 속성을 readony로 바꿔줌
+var 자료 = {
+    name : 'kim'
+  } as const; 
+
+function 내함수(a : 'kim') {
+
+}
+내함수(자료.name) //as const가없으면 여기서 에러 왜냐면 자료.name은 'string'타입으로 인식되기 때문에 value자체로 인식 x
+
+[함수와 methods에 type alias 지정]
+(type alias)
+    함수의 파라미터타입, return 타입 두가지를 지정함
+    ex)
+    type NumOut = (x: number, y : number)=> number;
+
+        *arrow 함수 복습
+        arrow function의 장점은 기호 생략기능을 제공해준다는 점인데
+            1. arrow function에선 중괄호안에 return 어쩌구 코드밖에 없으면 중괄호 { } 생략해도 봐줍니다. 
+            2. 파라미터가 한개 밖에 없으면 소괄호 ( ) 생략해도 봐줍니다.
+
+    **주의
+    function 함수이름 :NumOut (){} && let 함수이름 : NumOut = ()=>{}
+    이런 식은 불가  
+    //이런식으로 
+        type NumOut = (x : number, y : number ) => number 
+        let ABC :NumOut = function(x,y){
+        return x + y
+        }
+(method 안에 타입지정)
+
+    type Member = {
+        name : string,
+        age : number,
+        plusOne : ( x:number)=> number,
+        changeName : ()=>void
+    }
+    let 회원정보 : Member = {
+        name : 'kim',
+        age : 30,
+        plusOne (x: number) :number{
+        return x + 1
+        },
+        changeName : () => {
+        console.log('안녕')
+        }
+    } 
+    //이런식으로도 가능
+
+    type Type1 = (x : string) => string ;
+    type Type2 = (x : string) => number ;
+
+    function cutZero(x){
+        let result = x.replace(/^0+/,"");
+        return result;
+    }
+    function remoiveDash(x){
+        let result = x.replace(/-/g,"");
+        return parseFloat(result);
+    }
+
+    function 함수(x :string, cutZero :Type1, remoiveDash :Type1){
+        console.log(remoiveDash(cutZero(x)));
+    }
+    //이런식으로도 가능2
+
+[타입스크립트로 HTML 변경과 조작할 때 주의점]
+
+strictNullCheck 옵션 : 변수 조작하기 전에 이게 null인지 아닌지 캐치 // html 조작할 때 셀렉터로 찾으면 null 어쩌구가 많이 발생하는데 그거 잡을 때도 도움
+
+/*
+    let 제목 = document.querySelector('#title');
+    제목.innerHTML = '반갑소'
+
+    이러면 원래 변경되어야하는데 타입스크립트는 에러를 내줍니다. 
+    "제목이라는 변수가 null일 수 있습니다"
+    아까 켜놨던 strict 옵션 덕분에 이런 에러를 내주는데
+    이유는 셀렉터로 html을 찾으면 타입이 Element | null 이기 때문에  
+
+    그래서 해결책1. narrowing 하면 됩니다. 
+        let 제목 = document.querySelector('#title');
+        if (제목 != null) {
+        제목.innerHTML = '반갑소'
+        }
+        멋있게 else문도 추가하면 더 완벽한 코드가 되겠군요. 
+ 
+    해결책2. 더 좋은 instanceof 사용하는 narrowing 방법도 있습니다.
+
+        let 제목 = document.querySelector('#title');
+        if (제목 instanceof HTMLElement) {
+        제목.innerHTML = '반갑소'
+
+    해결책3. assertion 써도 될듯요  
+
+        let 제목 = document.querySelector('#title') as HTMLElement;
+        제목.innerHTML = '반갑소'
+        as 키워드를 쓰면 타입을 구라칠 수 있다고 배웠습니다.
+        HTMLElement 혹은 그냥 Element 이걸로 구라치면 됩니다. 
+        물론 좋지 않은 임시 땜빵문법이 맞습니다.
+
+    해결책4. optional chaining 연산자 
+
+        let 제목 = document.querySelector('#title');
+        if (제목?.innerHTML != undefined) {
+        제목.innerHTML = '반갑소'
+        }
+        이건 몰라도 되는데 가끔 innerHTML 작성할 때 엔터키로 자동완성시키면 ?. 이런 연산자가 자동으로 붙습니다.
+        js 신문법인데 뭔 뜻이냐면 왼쪽에 있는 object 자료안에 .innerHTML이 존재하면 그거 써주시고 없으면 undefined 남기셈~ 입니다. 
+        그래서 가끔 ?. 연산자로 해결할 때도 있습니다. 
+
+    해결책5. 그냥 strict 설정 false로 끄셈
+
+        null 체크해주는게 귀찮으면 그냥 설정 끄면 모든 고민이 해결되긴 합니다. 
+++) 
+html 태그 종류별로 정확한 타입명칭이 있습니다.
+a 태그는 HTMLAnchorElement
+img 태그는 HTMLImageElement
+h4 태그는 HTMLHeadingElement
+..
+
+백만개가 있는데 이런 정확한 타입으로 narrowing 해주셔야 html 속성 수정을 제대로할 수 있습니다.
+전부 외울 필요는 없고 자동완성 잘 될걸요
+ 
+let 링크 = document.querySelector('#link');
+    if (링크 instanceof HTMLElement) {
+        링크.href = 'https://kakao.com' //에러남 ㅅㄱ
+    }
+    if (링크 instanceof HTMLAnchorElement) {
+    링크.href = 'https://kakao.com'  //잘됨
+}
+*/
+
+let 버튼 = document.getElementById('button');
+버튼?.addEventListener('click', function(){
+  console.log('안녕')
+})  //narrowing대신 optional chaining사용
+
+[복습 : prototype]
+1 직접 자식의 obj가 어떤 자료를 가지면 그거를 출력
+2 없으면 부모유전자(prototype) 뒤짐 
+3 없으면 부모의 부모 유전자까지 
+이걸 prototype chain이라고 함 ex) 배열은 Array안에 sort()등 기본적이 함수가 내장되어있음 -> Array.prototype 치면 알 수 있음
+
+[tsc에서 class]
+
+class Person{
+    name :string; //이런식으로 constructor 안에 name 속성 지정하기 전에 미리 나타내야 에러안뜸
+    constructor(){
+        this.name = 'kim'
+    }
+
+}
+
+[복습 :  rest parameter] -> 파라미터 갯수 미정일때 
+//점 세개 붙이고 작명 아무렇게, 다른파라미터있으면 맨뒤에
+    function 함수(...a: number[]){
+        console.log(a)
+    }
+
+    함수(1,3,5,6) // 이런식으로 숫자 파라미터들만 오는 것으로 한정하면 number가 아닌 number[]를 남겨야함
+
+[복습 :  spread operator] : 레스트처럼 ... 붙이는데 배열 괄호 벗김 
+
+[복습 :  destructoring ] : 배열이나 obj 형태자료를 변수로 한꺼번 빼서 설정
+    
+    대표예시)
+        let [변수1, 변수2] = ['안녕', 100] ; //array를 한꺼번에 변수로 할당
+
+    let { student : student, age : age } = { student : true, age : 20} 
+    혹은 let { student, age } = { student : true, age : 20} // JSE6 신뭄법
+
+    function 함수({student, age} : { student : boolean, age : number}){ <- 이런식으로 object 파라미터의 타입을 지정할 수 있ㅇ므
+    console.log(student, age);
+    } // 상식 == 파라미터는 변수만들기
+    console.log({student : true, age : 20}); 이렇게 나타내면 위에 console.lg(변수 할당에 true, 20으로 나옴)
+
+*****[narrowing 2]
+
+    1) && 기능 : null & undefined 타입 체크 경우 잦음
+
+        ***** && : falsy한 값을 찾아주고 그게 아니면 마지막 값 남김
+        ***** falsy값은 ex)  null, undefined, NaN 이런것을 의미
+
+        1 && null && 3   // null이 남음
+        undefined && '안녕' && 100  // undefined 남음
+        ㄴ> if문 조건식안에 falsy 값이 남으면 if문 실행되지x
+        ex) if (변수 && typeof strs === "string") {} 
+
+        ***참고로 if (변수 != null) 이렇게 조건식을 써도 
+        null, undefined 이거 두 개를 동시에 거를 수 있음
+
+
+    2) in 연산자로 object 자료 narrowing
+
+        if (이 파라미터가 a라는 속성을 안에 가지고 있냐) = if (키값 in object자료형) 
+        ex) 
+            type Fish = { swim: string };
+            type Bird = { fly: string };
+            function 함수(animal: Fish | Bird) {
+            if ("swim" in animal) {
+                return animal.swim
+            }
+            return animal.fly
+            } 
+
+
+    3)class로부터 생산된 object라면 instanceof로 narrowing
+
+    4)literal type이 있으면 narrowing 쉬움 
+        type Car = {
+            wheel : '4개',
+            color : string
+        }
+        type Bike = {
+            wheel : '2개',
+            color : string
+        }
+        
+      
+    // typeof 연산자는 string, number, object 이런 것만 구분
+    // instanceof로 구분 불가
+    // 키 값이 같아서 속성으로 구분하기도 애매 
+
+    //ㄴ> 그냥 value 값에 대한 if문 작성으로 narrowing : 즉, unique한 값을 value로 넣어두면 narrowing이 편함
+        function 함수(x : Car | Bike){
+            if (x.wheel == '4개'){
+            console.log('이 차는 ' + x.color)
+            } else {
+            console.log('이 바이크는 ' + x.color)
+            }
+        }
+
+[never 타입] 
+function에 붙임, void와 유사 / 
+1 return 값을 안가짐
+2 endpoint가 없어야함 (= 끝나지 않는 함수) 
+        
+    1_
+        ex)
+                function 함수 : never {
+                    return new Error()
+                }
+    2_ 
+        ex) 혹은 함수안에 while(true)로 무한히 반복되어 끝나지 않는경우
+
+코드 이상하게 짜면 등장함 
+무언가를 return하고싶지 않을 경우 그냥 void 타입을 이용 
+배우는 이유는 가끔 코드 이상하게 짜다보면 자동으로 등장 
+이 때 never 이게 뭘 의미하는지 이해만 잘 하기 
+    ex)
+            이상한 narrowing 했을때
+            
+            tsconfig.json에서 strict 옵션을 켜둘 경우 // 함부로 any 타입을 지정해주지 않는 경우     
+
+
+[public, private]
+타스에서는 객체지향 언어같은 문법도 제공 // public, private, protected, static 같은..
+
+class User{
+    public name = 'kim';
+
+    constructor(a){
+        this.name = a
+    }
+}
+let 유저1 = new User('park');
+유저1.name = 'sim'; // public 붙이면 모든 자식이 이용가능, public 은 생략가능
+
+private 붙이면 유저1.name <- 에러 수정 불가 //private : <class안에서만 수정, 이용가능>
+
+but 자식들이 private한 familyName을 바꾸고 싶으면
+1. class 안에서 familyName 변경 함수 제작
+
+public 키워드를 constructor 안에 파라미터에 쓰면 this.어쩌구 생략가능
+ex) 
+class User{
+    constructor(public name : string){
+
+    }
+}
+
+[protected, static]
+    protected : extends 된 class는 사용가능, 자식들 사용불가능  //private는 extends, 자식들 모두 사용 불가능
+    static : 부모 class에 직접 부여되고 자식에게 안물려줌, extends 된 class에 사용가능 //즉 Class.(static한)필드 이런식으로 접근
+    ex) 
+    class User{ 
+        static skill = 'js';
+        intro = this.skill +' 전문가입니다.' //에러
+        intro = User.skill +' 전문가입니다.' //에러x
+    }
+    ㄴ> 수정하고 싶으면 private 쓰고 그 다음에 수정함수를 만들어서 사용하는게 더 안전한 방법
+
+    private / protected / public + static 가능
+
+
+     
+        class를 복사하고 싶으면 extends 붙이면됨
+            class NeUser extends{
+
+            }
+            ㄴ> 여기서 protected 붙이면 현재 class와 extends 된 class안에서 사용가능
+
+   
+   Q (숙제1) 다음 x, y, z 속성의 특징을 설명해보십시오.
+
+    class User {
+      private static x = 10;
+      public static y = 20;
+      protected z = 30;
+    }
+
+   A 
+    1. 필드값은 원래는 모든 User의 자식들에게 물려주는 속성이지만 
+    x와 y에는 static 키워드가 붙었기 때문에 User.x 이런 식으로만 접근해서 쓸 수 있습니다.
+    User의 자식들은 x와 y를 쓸 수 없습니다.
+
+    2. private static x는 class 내부에서만 수정가능합니다. 
+
+    3. public static y는 class 내부 외부 상관없이 수정가능합니다. public 키워드 지워도 똑같이 동작할 듯 
+
+    4. protected z는 private 키워드와 유사하게 class 내부에서만 사용이 가능한데 
+    약간 범위가 넓어서 extends로 복사한 class 내부에서도 사용할 수 있습니다. 
+
+[type도 import, export 해서 씀, namespace] 
+
+    a.ts 에서 b.ts로 갖다 쓰고 싶으면,
+    변수의 경우,
+        a.ts> 
+            export var 이름 = 'kim' ; 
+        b.ts> 
+            import {변수명} from '경로';
+    type도 import export가능
+    ex) export type ObjFunction = (a? :object) => void
+
+    *CommonJS(require, exports) VS ESModule(import, export) 시스템
+    ES는 ES6부터 추가되서 ES6가 지원되지 않는 환경에서는 require/exports 키워드를 사용
+
+    namespace를 쓰면 경로 관한 지정안하고 해당 namespace의 이름.변수이름 으로 가져올 수 있음
+    ex)
+       a.ts> 
+            namespace GoodDog{
+                export type Dog = string;
+            }
+            
+            namespace BadDog{
+                export interface Dog { name : string};
+            } 
+    
+        b.ts>
+            let dog1 :GoodDog.Dog = 'bark';
+            let dog2 :BadDog.Dog = { name : 'paw' }
+        
+            console.log(dog1);
+            console.log(dog2);
+
+[타입을 파라미터로 입력하는 Generic]
+
+    function 함수(x: unknown[]) {
+        return x[0];
+    }
+    let a = 함수([4,2])
+    console.log(a + 1)          //에러남 
+
+    함수에 불확실한 unknown, any, union 타입을 입력하면
+    나오는 return 값도 unknown, any, union 타입으로 그값에따라 타입을 자동 변환해주지 x
+
+    *해결책
+        1. narrowing. 근데 귀찮음
+        2. Generic : 그냥 애초에 타입을 파라미터로 함수에 미리 입력하는 방법. 그럼 원하는 곳에 가변적으로 타입지정 가능     
+            ex) 함수<number>( ) 이렇게 입력 
+
+            function 함수<MyType>(x: MyType[]) :MyType {
+                return x[0];
+            }
+            
+            let a = 함수<number>([4,2])
+            let b = 함수<string>(['kim', 'park'])
+
+            return -1나 .length등 불가능한 경우 ;
+                function 함수<MyType extends number>(x: MyType) {
+                    return x - 1
+                } 여기서 <>안에 타입이 number가 아닌 string이 들어올 수 있는 불확실한 경우이기 때문
+            1 narrowing을 해도 되나, 2 extends 로 타입을 제한하는 방법
+                2_ex)    
+                    interface lengthCheck {
+                        length : number
+                    }
+                    function 함수<MyType extends lengthCheck>(x: MyType) {
+                        return x.length
+                    }
+                    
+                    let a = 함수<string>('hello')  //가능
+                    let a = 함수<number>(1234) //에러남
+                    1. length 속성을 가지고 있는 타입을 하나 만들었습니다. 이름은 lengthCheck로 했습니다. 
+                    
+                    2. 그걸 extends 해주면 MyType도 length 속성을 복사해서 가집니다. 
+                    
+                    3. 그래서 MyType은 length가 분명히 있기 때문에 맘대로 MyType을 부여받은 x는 .length 조작이 가능합니다. 
+
+            Q class의 필드값에 Generic 부여
+            class Person<T> {
+                name :T ;
+                constructor(a: T){
+                this.name = a;
+                }
+            }
+            let a = new Person('어쩌구');
+            a.name //any 타입이 되었넹 
+            /*
+                let a = new Person<string>('어쩌구');
+                a.name //string 타입이 되었넹 
+            */
+
+[React + TypeScript 사용할 때 알아야할 점]
+(typescript 적용)
+    npm create-react-app {프로젝트명} --template typescript //타입스크립트 세팅된 리액트만들기 
+
+    *기존 프로젝트에 타입스크립트만 더하고 싶으면 
+    기존 프로젝트 경로에서 터미널을 오픈
+    npm install --save typescript @types/node @types/react @types/react-dom @types/jest
+
+    일반 프로젝트와 다른 점은 컴포넌트 파일은 js가 아니라 tsx로 확장자를 사용
+    ㄴ> ts랑 똑같은데 jsx 문법을 지원
+
+(쓰는 법 5가지)
+    1. 일반 변수, 함수 타입지정
+        그냥 타입스크립트 배웠던 대로 똑같이 하면 됩니다. 
+    
+    2. JSX 타입지정
+        리액트에선 변수나 자료에 <div></div> 이런걸 쌩으로 담아서 쓸 수 있습니다. 
+        왜냐면 리액트에서 <div></div> 이렇게 쓰면 HTML이 아니라 JSX라고 부르는 자료가 됩니다. 
+        이런 자료를 타입지정하고 싶으면 JSX.Element 라는 타입을 쓰시면 됩니다.
+        let 박스 :JSX.Element = <div></div>
+        let 버튼 :JSX.Element = <button></button>
+        이러면 끝입니다.
+    
+    3. function component 타입지정
+        type AppProps = {
+            name: string;
+        }; 
+        function App (props: AppProps) :JSX.Element {
+            return (
+            <div>{message}</div>
+            )
+        }
+        props 파라미터는 어떻게 생겼는지 조사해서 알아서 타입지정해주면 되고
+        컴포넌트는 return으로 JSX를 뱉으니 당연히 return 타입으로 JSX.Element 써주면 됩니다.
+        근데 생략해도 자동으로 타입지정됩니다. 
+    
+        -props로 JSX를 입력할 수 있게 코드를 짜는 경우
+            <Container a={<h4>안녕</h4>} />
+
+                function Container (props) {
+                return (
+                    <div>{props.a}</div>
+                )
+                }
+
+            type ContainerProps = {
+                a: JSX.IntrinsicElements['h4'];
+                }; 
+                
+                function Container (props: ContainerProps) {
+                return (
+                    <div>{props.a}</div>
+                )
+                }
+            이런 식으로 넣을 수도
+            //(참고) 아마 리액트 18버전부터는 JSX.IntrinsicElements는 props 타입넣을 때만 사용가능
+
+    4. state 문법 사용시 타입지정 
+
+        state 만들 땐 그냥 자동으로 타입이 할당되어서 걱정할 필요는 없습니다.
+        state 타입이 나중에 변화할 수 있다고요? 그런 경우는 흔치 않겠지만 그러면 미리 지정하십시오. 
+        const [user, setUser] = useState<string | null>('kim');
+        그냥 <> 열고 타입넣으시면 됩니다.
+        Generic 문법을 이용해서 타입을 useState함수에 집어넣는 식으로 설정하면 됩니다. 
+
+    
+    5. type assertion 문법 사용할 때 
+
+        let code: any = 123; 
+        let employeeCode = <number> code; //안됩니다
+        assertion 하고 싶으면 as 또는 <> 쓰면 되는데
+        리액트에서 컴포넌트로 오해할 수 있어서 꺾쇠 괄호는 리액트에서 쓰지않습니다.
+        as 키워드만 씁시다.
+        하지만 as 키워드는 타입스크립트 보안해제기 때문에 타입이 100% 확실할 때만 사용하도록 합시다. 
+
+[React + TypeScript 사용할 때 알아야할 점 2 : Redux toolkit]
+
+    (redux 왜 쓰냐면) 
+
+    1. state를 한 곳에서 관리할 수 있어서 컴포넌트들이 props없이 state 다루기 쉽고 
+    2. 수정방법을 미리 reducer라는 함수로 정의해놔서 state 수정시 발생하는 버그를 줄일 수 있어서 씁니다.
+    그 외엔 쓸데없음 코드만 길어짐 
+
+    - redux 공식 toolkit 라이브러리를 써서 이쁘게 코드짜는 신규방식 redux 
+    - 예전처럼 if문 switch문 그런거 쓰는 전통방식 redux
+
+    (설치)
+    npm install redux react-redux 
+
+[tuple type]
+    구체적으로 타입지정하고싶을 때 
+    ex) "첫 자료는 무조건 string, 둘째 자료는 무조건 number인 array"
+    
+    1)Tuple 타입
+        let 멍멍이 :[string, boolean];
+        멍멍이 = ['dog', true]
+        이런식으로 괄호 안에 타입 적으면 됨
+
+    2)Tuple 응용 : rest parameter
+    rest parameter를 엄격하게 사용 
+    일반 파라미터 2개 넣는 것과 기능상 다를 바는 없는데 
+    차이는 rest parameter 쓰시면 파라미터가 전부 array에 담겨서 오는게 차이
+       
+    ex)
+        function 함수(...x :[string, number] ){
+            console.log(x)
+        }
+        함수('kim', 123)  //가능
+        함수('kim', 123, 456)  //에러
+        함수('kim', 'park')  //에러
+
+    3)
+        type Num = [number, number?, number];
+        ? 옵션기호는 뒤에만 붙일 수 있음
+        물음표 2개 쓰고 싶으시면 뒤에서 2개만 붙일 수 있음
+        물음표 100개 쓰고 싶으시면 뒤에서 100개만 붙일 수 있음
+
+    4)array 두개를 spread 연산자로 합치는 경우 타입지정은?
+        let arr2 :[number, number, ...number[]] = [4,5,6,7,8,9,10]  
+        rest parameter 처럼 맘껏 집어넣을 수 있음 
+
+    (Q) 함수에 타입지정을 해보도록 합시다.
+        function 함수(){
+        }
+        1. 이 함수의 첫째 파라미터는 문자,
+        2. 둘째 파라미터는 boolean,
+        3. 셋째 파라미터부터는 숫자 또는 문자가 들어와야합니다. 
+        그럼 함수에 파라미터를 어떻게 만들고 타입지정은 또 어떻게 해야할까요? 
+        오늘 배운 tuple 타입과 rest parameter를 사용해봅시다.
+
+        function 함수(...rest :[string, boolean, ...(number|string)[] ]){
+        }
+        
+        함수('a', true, 6, 3, '1', 4)
+
+        //rest 파라미터의 타입지정은 :[] 이처럼 배열[]표시가 기본 베이스임
+
+[declare] ->  이미 정의된 변수나 함수를 재정의
+
+->문제: .ts가 아닌 .js 에서 .ts로 import해야하는 변수 발생
+보통 html에다가 <script src></script> 여러번 했을때 
+브라우저의 console에는 뜨는데 
+typescript에선 import하지 않아서 에러가 나는 문제발생 
+
+(data.js)
+
+var a = 10;
+var b = {name :'kim'};
+(index.ts)
+
+declare let a :number; //이걸 추가
+console.log(a + 1);
+
+"a 라는 변수는 분명 어딘가에 있긴 하니까 그만 징징대세요" 라는 뜻 
+그래서 js파일 변수를 가져다 쓰는데 '타입에러나 변수없다는 에러'를 방지하고 싶으면 
+
+    *(특징) declare 이게 붙은 코드들은 js로 변환x
+    그냥 컴파일러에게 힌트를 주는 역할의 코드라서
+    
+(TS의 이상한 특징 : Ambient Module )
+ts -> ts파일 끼리는 import, export 없이도 변수, 타입들을 다른 파일에서 가져다 쓸 수 있음  
+
+ts 파일에 대충 입력한 변수와 타입들은 전부 global 변수 취급 받음 
+전역으로 쓸 수 있는 파일을 전문용어로 ambient module 이라고 함
+
+***
+반면에 import 혹은 export 키워드가 들어간 ts 파일은 X
+import / export 키워드가 적어도 하나 있으면 그 파일은 로컬 모듈이 되고
+거기 있는 모든 변수는 export를 해줘야 다른 파일에서 사용가능
+->요약:
+    ts 파일에 import export 문법이 없으면 글로벌 모듈
+    ts 파일에 import export 문법이 있으면 로컬 모듈 
+        
+(declare global = 근데 로컬 모듈에서 갑자기 전역으로 변수를 만들고 싶을 때)
+declare global {
+    type Dog = string;
+  } 이러면 로컬 모듈에 적으면 Dog 타입을 모든 파일에서 이용가능
+
+[d.ts = type만 저장해두는 파일 형식]
+
+(그래서 definition의 약자인 d가 들어감 그리고 자바스크립트로 컴파일되지x)
+1. 타입정의만 따로 저장해놓고 import 해서 쓰려고
+2. 프로젝트에서 사용하는 타입을 쭉 정리해놓을 레퍼런스용으로 사용
+
+(타입만 따로 d.ts에 모아놓으려면)
+
+1. 어쩌구.d.ts 라고 작성하신 파일은 타입 정의만 넣을 수 o
+type 키워드, interface 이런거
+
+2. 정의해둔 타입은 export 해서 써야함. 
+d.ts 파일은 ts 파일이 아니기 때문에 그냥 써도 ambient module이 되지 x 
+
+3. 한 번에 많은 타입을 export 하고 싶은 경우 namespace에
+아니면 자바스크립트 배운 사람처럼 import * as 어쩌구 문법쓸수 있음
+어쩌구.d.ts 라는 파일엔 어쩌구.ts 파일에 있는 모든 변수와 함수 타입정의가 들음
+
+(export 없이 d.ts 파일을 글로벌 모듈 만들기)
+
+    원래 d.ts 파일은 import export 없어도 로컬모듈
+        -다른 ts파일에서 import를 해서 쓸 수 밖에 없는데
+        이게 귀찮으면 d.ts를 글로벌 모듈로 만듬
+    
+    프로젝트 내에 types/common 이런 폴더 두개를 만드시고 
+    tsconfig.json 파일에 "typeRoots": ["./types"] 이런 옵션을 추가
+        ts 파일 작성할 때 타입없으면 자동으로 여기서 타입 찾아서 적용
+
+    *다만
+    - 다만 이걸 쓸 경우 파일명.d.ts 자동생성 기능은 끄는게 좋을 듯 
+    - d.ts 파일명은 기존 ts 파일명과 안겹치게 작성하는게 좋음
+    - 하지만 이런거 쓰다가 로컬 타입과 저런 글로벌 타입이 겹치면 어쩌쥬 역시 import export가 안전 
+    - 그래서 보통은 d.ts 파일 만들어서 글로벌 타입보관함으로 쓰는 경우는 별로 없음
+
+
+(유명한 JS 라이브러리들은 d.ts 파일을 제공 : 설명)
+
+님들이 jQuery 혹은 Bootstrap 애니메이션 라이브러리를 가져다 쓴다고 합시다.
+근데 이건 당연히 .js 로 끝나는 자바스크립트 파일이겠죠?
+그럼 당연히 ts 파일에서 쓰려면 에러가 나겠죠? 
+그럼 여러분들이 직접 jquery.d.ts 파일을 만들어서 타입정의를 하시거나 그러면 되는데 
+근데 유명한 라이브러리들은 전부 d.ts 파일을 누군가 만들어 놨기 때문에 
+그거 찾아서 다운받거나 하시면 됩니다
+Definitely Typed 여기가 주로 쓰는 라이브러리 모아놓은 github repository인데 
+아마 대부분 라이브러리의 타입정의 파일을 찾을 수 있을 겁니다.
+
+근데 요즘은 npm으로 라이브러리 설치시 타입스크립트 타입정의된 버전을 따로 찾아서 설치하실 수 있습니다.
+TypeSearch 여기 들어가면 타입정의된 npm 패키지 찾아볼 수 있음
+타입이 정의된 라이브러리를 npm으로 설치하면 
+node_modules/@types 이런 경로에 타입이 설치됩니다.
+그리고 타입스크립트 컴파일러는 자동으로 여기 있는 타입 파일을 참고해서 타입을 가져오게 되어있습니다. 
+(참고) "typeRoots" 옵션이 있을 경우 node_modules/@types 폴더를 추가해야합니다. 아니면 그냥 "typeRoots" 옵션을 제거해보셈 
+ 
+혹은 따로 타입부분만 설치할 수도 있습니다. 
+예를 들어 타입파일이 제공되지 않는 jQuery 같은 경우 
+npm install --save @types/jquery
+이렇게 강제로 설치하시면 이제 jQuery 문법 사용할 때 타입정의 안하셔도 됩니다. 
+
+     
+[interface]
+    class가 어떤 속성을 가지고 있는지 타입으로 확인하고 싶으면
+    interface + implements 키워드로 확인
+
+    interface CarType{
+        model : string,
+        price : string
+    }
+    class Car{
+        model : string;
+        price : number = 1000;
+        constructor(a : string){
+        this.model = a
+        }
+    }
+    
+    * implements는 interface에 들어있는 속성을 가지고 있는지 확인만
+    class에다가 필드와 타입을 할당하고 변형시키고 그런 역할은 x
+    //
+    let 붕붕이 =  new Car('morning');
+
+    interface CarType {
+        model : string,
+        tax : (price :number) => number;
+      }
+      
+      class Car implements CarType {
+        model;   ///any 타입됨
+        tax (a){   ///a 파라미터는 any 타입됨 
+          return a * 0.1
+        }
+      }
+  
+    *** implements 용도?
+    class가 특정 필드와 함수를 가지고 있는지 확인하고 싶은 경우 간혹 사용
+    클래스끼리 복잡하게 상속하고 그런 경우엔
+    이 클래스에 어떤 필드와 함수가 들어있는지 추론하기 힘든 경우
+    이 class가 특정 필드와 함수같은걸 가지고 있는지 확인하고 체크하고 싶을 때
+
+        -> class 어쩌구 implements 저쩌구 { } 씀 
+    
+    ***  extends 용도?
+    클래스끼리 복사할 때 (상속을 구현할 때
+
+[Object index signature]
+1. object 자료에 어떤 속성들이 들어올 수 있는지 아직 모르는 경우
+2. 타입지정할 속성이 너무 많은 경우
+object 자료에 타입을 미리 만들어줄때 사용
+
+    interface StringOnly {
+        [key: string]: string
+    }
+    
+    let obj :StringOnly = {
+        name : 'kim',
+        age : '20',
+        location : 'seoul'
+    }
+
+    [key: string]: string = 쉽게 말하면 { 모든속성 : string } ㅡ> key가 string인 모든속성의 value는 string~ 
+    
+    interface StringOnly {
+        age : number,   ///에러남 ㅅㄱ
+        [key: string]: string,
+      }
+      
+    interface StringOnly {
+    age : string,   ///가능  
+    [key: string]: string,
+    }이거를 ...
+
+    interface StringOnly {
+    age : number,   ///가능
+    [key: string]: string | number,
+    }
+    이런식으로 해야 가능
+
+    - 중첩되는 타입지정
+    ex) 
+        interface ObjType {
+            'font-size' : number ,
+            [key : string] : number | ObjType 
+        }
+        
+        let obj : ObjType = {
+            'font-size' : 10,
+            'secondary' : {
+            'font-size' : 12,
+            'third' : {
+                'font-size' : 14
+            }
+            }
+        }
+
+[key of] // object의 타입을 다른 타입으로 변환하고 싶을때, 타입 다시작성 아닌방법으로 mapping 하기
+    keyof는 object 타입에 사용하면 object 타입이 가지고 있는 모든 key값을 union type으로 합쳐서 내보냄
+    즉 key의 값자체를 literal로 | 로 엮어서 합쳐서 내보냄 즉 
+    ex)
+        interface Person {
+            age: number;
+            name: string;
+        }
+        type PersonKeys = keyof Person;   //"age" | "name" 타입됩니다
+        let a :PersonKeys = 'age'; //가능
+        let b :PersonKeys = 'ageeee'; //불가능
+
+[Mapped Types]
+타입을 한꺼번에 바꾸고 싶을때 편함
+=> 문법 : [ 자유작명 in keyof 타입파라미터 ] : 원하는 타입
+ex) 
+    type Car = {
+    color: boolean,
+    model : boolean,
+    price : boolean | number,
+  };
+  
+  type TypeChanger <MyType> = {
+    [key in keyof MyType]: string;
+  };
+  
+  type 새로운타입 = TypeChanger<Car>;
+  
+  let obj :새로운타입 = {
+    color: 'red',
+    model : 'kia',
+    price : '300',
+  }
+
+  * generic은 <>꺾쇠 안에 사용하고 타입이나 클래스를 나타냄
+
+[조건문으로 타입지정]
+
+1) 삼항연산자 와 extends
+-조건문 ? 참일때실행할코드 : 거짓일때실행할코드
+
+타입 조건식은 주로 extends 키워드와 삼항연산자를 이용
+ex1) 
+    type Age<T> = T extends string ? string : unknown;
+    let age : Age<string> //age는 string 타입
+    let age2 : Age<number> //age는 unknown 타입
+
+ex2) Q. 그럼 파라미터로 array 자료를 입력하면 array의 첫 자료의 타입을 그대로 남겨주고,
+    array 자료가 아니라 다른걸 입력하면 any 타입을 남겨주는 타입은 어떻게 만들면?
+    
+    type FirstItem<T> = T extends any[] ? T[0] : any
+    let age1 :FirstItem<string[]>;
+    let age2 :FirstItem<number>; 
+
+[infer]
+infer 키워드는 지금 입력한 타입을 변수로 만들어주는 키워드
+
+type Person<T> = T extends infer R ? R : unknown; 
+    type 새타입 = Person<string> // 새타입은 string 타입입니다 
+    1. infer 키워드는 조건문 안에서만 사용가능 
+    2. infer 우측에 자유롭게 작명해주면 타입을 T에서 유추해서 R이라는 변수에 집어넣을 떄씀
+    그래서 위의 예제에서 <string> 이렇게 타입파라미터자리에 string 집어넣으면 R은 string 인것
+    3. R을 조건식 안에서 맘대로 사용가능 
+    이런 식으로 타입파라미터에서 타입을 추출해서 쓰고싶을 때 쓰는 키워드 
+
+*용도
+    1. array 안에 있던 타입이 어떤 타입인지 뽑아서 변수로 만들기
+        type 타입추출<T> = T extends (infer R)[] ? R : unknown; 
+        type NewType = 타입추출< boolean[] > // NewType 은 boolean 타입 
+    2. 함수의 return 타입이 어떤 타입인지 뽑아서 변수로 만들기
+        type 타입추출<T> = T extends ( ()=> infer R ) ? R : unknown; 
+        type NewType = 타입추출< () => number > // NewType은 number 타입 
