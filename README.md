@@ -6,7 +6,11 @@
 📋 2024-08-05 ~ 2024-08-06
 ======================================================================
 - mutation : 변수를 변경하는 행위
-- RTK_createReducer에서는 state를 새로 만들어 반환(ex) state.filter(..)) 하거나 state object를 변경해서(ex) state.push..) 반환해야함  
+- RTK_createReducer에서는 state를 새로 만들어 반환(ex) state.filter(..)) 하거나 state object를 변경해서(ex) state.push..) 반환해야함
+   ** state object값을 변경하지 않고서
+   새로 만들 경우(= mutation이 아닌경우),
+   reducers: (state, action)=>{  } 에서   {}중괄호와 return은 생략은 가능해서 상관없지만
+   {}안에서 return안쓰는 경우 dispatch해도 상태 반영이 안됨
 
 ----------------------
 📁coding apple
